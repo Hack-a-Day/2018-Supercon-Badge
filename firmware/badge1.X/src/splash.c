@@ -52,16 +52,42 @@ const uint32_t arc[25] = {
 // A  arc (167,70,0) (191,70,1) (191,94,2) (167,36,3) box (207,94,215,118)
 // Y  arc (225,70,3) (249,70,2) box (244,90,252,118)
 
-void draw_arc (uint16_t x, uint16_t y, uint16_t xlen, uint16_t ylen, uint32_t back)
+void draw_arc (uint16_t x, uint16_t y, uint8_t rotate, uint32_t back)
 {
-    uint32_t i,j;
-    tft_set_write_area(x,y,xlen,ylen);
-    TFT_24_7789_Write_Command(0x2C);
-    //FIXME: Why do I need these +1 adjustments. Off-by-one in tft_set_write_area?
-    for (i=0; i<((xlen+1)*(ylen+1)); i++)
-    {
-    //TODO: Test for arc 1 or 0 and place color pixel as necessary
-    TFT_24_7789_Write_Data3((back>>16)&0xFF,(back>>8)&0xFF,(back>>0)&0xFF);
+  uint32_t i,j;
+  tft_set_write_area(x,y,24,24);
+  TFT_24_7789_Write_Command(0x2C);
+
+
+  //FIXME: Why do I need these +1 adjustments. Off-by-one in tft_set_write_area?
+  //for (i=0; i<((xlen+1)*(ylen+1)); i++)
+  for (i=0; i<25; i++)
+	{
+	for (j=0; j<25; j++)
+		{
+		//TODO: Test for arc 1 or 0 and place color pixel as necessary
+		if (rotate == 0)
+			{
+			if (arc[i] & 1<<(24-j)) TFT_24_7789_Write_Data3((back>>16)&0xFF,(back>>8)&0xFF,(back>>0)&0xFF);
+			else TFT_24_7789_Write_Data3(0,0,0);
+			}
+		else if (rotate == 1)
+			{
+			if (arc[24-j] & 1<<(24-i)) TFT_24_7789_Write_Data3((back>>16)&0xFF,(back>>8)&0xFF,(back>>0)&0xFF);
+			else TFT_24_7789_Write_Data3(0,0,0);
+			}
+		else if (rotate == 2)
+			{
+			if (arc[24-i] & 1<<(j)) TFT_24_7789_Write_Data3((back>>16)&0xFF,(back>>8)&0xFF,(back>>0)&0xFF);
+			else TFT_24_7789_Write_Data3(0,0,0);
+			}
+		else if (rotate == 3)
+			{
+			if (arc[j] & 1<<(i)) TFT_24_7789_Write_Data3((back>>16)&0xFF,(back>>8)&0xFF,(back>>0)&0xFF);
+			else TFT_24_7789_Write_Data3(0,0,0);
+			}
+		}
+		//TFT_24_7789_Write_Data3((back>>16)&0xFF,(back>>8)&0xFF,(back>>0)&0xFF);
     }
 }
 
@@ -176,7 +202,10 @@ void animate_splash(void)
     uint16_t splash_waitfor = 0;
     
 	tft_fill_area(0,0,320,240,CIPHER_BACKGROUND);    //Make display black
-	draw_arc(10,10,100,100,0xFF0000);
+	draw_arc(10,10,0,0xFF0000);
+	draw_arc(35,10,1,0xFF0000);
+	draw_arc(35,35,2,0xFF0000);
+	draw_arc(10,35,3,0xFF0000);
 	while (1) { ;; }
 	/*
     struct Cipher_box box0 = { 0, 0 };
