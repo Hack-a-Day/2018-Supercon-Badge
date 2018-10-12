@@ -1,6 +1,70 @@
 #include "splash.h"
 #include <stdint.h>
 
+const uint32_t arc[25] = {
+  0b00000000000000000000000000001111,
+  0b00000000000000000000000011111111,
+  0b00000000000000000000011111111111,
+  0b00000000000000000001111111111111,
+  0b00000000000000000011111111111111,
+  0b00000000000000001111111111111111,
+  0b00000000000000011111111111111111,
+  0b00000000000000111111111111111111,
+  0b00000000000001111111111111111111,
+  0b00000000000011111111111111111100,
+  0b00000000000011111111111111000000,
+  0b00000000000111111111111100000000,
+  0b00000000001111111111110000000000,
+  0b00000000001111111111100000000000,
+  0b00000000011111111111000000000000,
+  0b00000000011111111110000000000000,
+  0b00000000011111111110000000000000,
+  0b00000000111111111100000000000000,
+  0b00000000111111111100000000000000,
+  0b00000000111111111000000000000000,
+  0b00000000111111111000000000000000,
+  0b00000001111111111000000000000000,
+  0b00000001111111111000000000000000,
+  0b00000001111111110000000000000000,
+  0b00000001111111110000000000000000
+};
+
+/*** Orientations ***
+  0 = top left arc
+  1 = top right arc
+  2 = bottom right arc
+  3 = bottom left arc
+********************/
+
+/*** Offsets ***
+  0 = Top down, bits 24 through 0
+  1 = bits 24 through 0, bottom up
+  2 = bottom up, bits 0 through 24
+  3 = bottom up, bits 24 through 0
+***************/
+
+// H  arc (52,17,0) (76,17,1) box (52,12,60,60) (92,37,100,60)
+// A  arc (110,12,0) (134,12,1) (134,36,2) (110,36,3) box (149,36,157,60)
+// C  arc (167,17,0) (167,36,3) box (190,12,215,20) (190,52,215,60)
+// K  arc (248,17,2) (248,36,1) bot (225,12,233,60)
+// A  arc (52,70,0) (76,70,1) (134,94,2) (52,94,3) box (92,94,100,118)
+// D  arc (110,70,0) (134,70,1) (134,94,2) (110,36,3) box (149,70,157,93)
+// A  arc (167,70,0) (191,70,1) (191,94,2) (167,36,3) box (207,94,215,118)
+// Y  arc (225,70,3) (249,70,2) box (244,90,252,118)
+
+void draw_arc (uint16_t x, uint16_t y, uint16_t xlen, uint16_t ylen, uint32_t back)
+{
+    uint32_t i,j;
+    tft_set_write_area(x,y,xlen,ylen);
+    TFT_24_7789_Write_Command(0x2C);
+    //FIXME: Why do I need these +1 adjustments. Off-by-one in tft_set_write_area?
+    for (i=0; i<((xlen+1)*(ylen+1)); i++)
+    {
+    //TODO: Test for arc 1 or 0 and place color pixel as necessary
+    TFT_24_7789_Write_Data3((back>>16)&0xFF,(back>>8)&0xFF,(back>>0)&0xFF);
+    }
+}
+
 struct Cipher_box
 	{
     int16_t x;	    // Pixel location on screen (negative values for left overflow)
@@ -111,6 +175,10 @@ void animate_splash(void)
     uint16_t x = 0;
     uint16_t splash_waitfor = 0;
     
+	tft_fill_area(0,0,320,240,CIPHER_BACKGROUND);    //Make display black
+	draw_arc(10,10,100,100,0xFF0000);
+	while (1) { ;; }
+	/*
     struct Cipher_box box0 = { 0, 0 };
     struct Cipher_box box1 = { 319+(10*CIPHER_CHAR_WIDTH), 1 };
     struct Cipher_box box2 = { 0-(2*CIPHER_CHAR_WIDTH), 2 };
@@ -149,4 +217,5 @@ void animate_splash(void)
 	    }
 	}
     }
+	 */
 }
