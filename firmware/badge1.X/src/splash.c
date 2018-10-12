@@ -29,7 +29,8 @@ const uint32_t arc[25] = {
   0b00000001111111110000000000000000
 };
 
-#define LOGOC	0xFF0000
+#define LOGOC			0xFF0000
+#define SPLASH_DELAY	140
 
 /*** Orientations ***
   0 = top left arc
@@ -207,13 +208,21 @@ uint8_t overlaps_logo(int16_t x, uint8_t row) {
     return 0;
 }
 
+void splash_delay(uint32_t delay)
+	{
+	uint32_t splash_startwait = millis();
+	while((millis()-splash_startwait) < delay) { ;; }
+	return;
+	}
+
 void animate_splash(void)
 {
     uint16_t x = 0;
-    uint16_t splash_waitfor = 0;
+    
     
 	tft_fill_area(0,0,320,240,CIPHER_BACKGROUND);    //Make display black
 	
+	/*
 	// H  arc (52,17,0) (76,17,1) box (52,12,60,60) (92,37,100,60)
 	draw_arc(52,17,0,LOGOC); draw_arc(77,17,1,LOGOC); tft_fill_area(52,12,8,48,LOGOC); tft_fill_area(93,37,8,23,LOGOC); 
 	// A  arc (110,12,0) (134,12,1) (134,36,2) (110,36,3) box (149,36,157,60)
@@ -247,6 +256,7 @@ void animate_splash(void)
 	draw_arc(167,186,0,LOGOC); draw_arc(191,186,1,LOGOC); draw_arc(191,211,2,LOGOC); draw_arc(167,211,3,LOGOC);
 	// N arc (225,186,0) (249,186,1) box (225,210,8,25) (266,210,8,25)
 	draw_arc(225,186,0,LOGOC); draw_arc(249,186,1,LOGOC); tft_fill_area(225,210,8,25,LOGOC); tft_fill_area(265,210,8,25,LOGOC);
+	*/
 	
 	/*
 	draw_arc(10,10,0,0xFF0000);
@@ -254,7 +264,56 @@ void animate_splash(void)
 	draw_arc(35,35,2,0xFF0000);
 	draw_arc(10,35,3,0xFF0000);
 	 */
-	while (1) { ;; }
+	
+	// U arc (110,152,3) (134,152,2) box (110,128,8,24) (150,128,8,24)
+	draw_arc(110,153,3,LOGOC); draw_arc(134,153,2,LOGOC); tft_fill_area(110,128,8,24,LOGOC); tft_fill_area(150,128,8,24,LOGOC);
+	splash_delay(SPLASH_DELAY);
+	// D  arc (110,70,0) (134,70,1) (134,94,2) (110,36,3) box (149,70,157,93)
+	draw_arc(110,70,0,LOGOC); draw_arc(134,70,1,LOGOC); draw_arc(134,95,2,LOGOC); draw_arc(110,95,3,LOGOC); tft_fill_area(150,70,8,24,LOGOC);
+	splash_delay(SPLASH_DELAY);
+	// A  arc (167,70,0) (191,70,1) (191,94,2) (167,36,3) box (207,94,215,118)
+	draw_arc(167,70,0,LOGOC); draw_arc(191,70,1,LOGOC); draw_arc(191,95,2,LOGOC); draw_arc(167,95,3,LOGOC); tft_fill_area(207,94,8,25,LOGOC);
+	splash_delay(SPLASH_DELAY);
+	// P arc (167,128,0) (191,128,1) (191,152,2) (167,152,3) box (167,152,8,25)
+	draw_arc(167,128,0,LOGOC); draw_arc(191,128,1,LOGOC); draw_arc(191,153,2,LOGOC); draw_arc(167,153,3,LOGOC); tft_fill_area(167,152,8,25,LOGOC);
+	splash_delay(SPLASH_DELAY);
+	// O arc (167,186,0) (191,186,1) (191,210,2) (167,210,3)
+	draw_arc(167,186,0,LOGOC); draw_arc(191,186,1,LOGOC); draw_arc(191,211,2,LOGOC); draw_arc(167,211,3,LOGOC);
+	splash_delay(SPLASH_DELAY);
+	// C arc (110,186,0) (110,210,3) box (134,186,24,8) (134,227,24,8)
+	draw_arc(110,186,0,LOGOC); draw_arc(110,211,3,LOGOC); tft_fill_area(134,186,24,8,LOGOC); tft_fill_area(134,227,24,8,LOGOC);
+	splash_delay(SPLASH_DELAY);
+	// R arc (52,186,0) (76,186,1) box (52,210,8,25)
+	draw_arc(52,186,0,LOGOC); draw_arc(76,186,1,LOGOC); tft_fill_area(52,210,8,25,LOGOC);
+	splash_delay(SPLASH_DELAY);
+	// S arc (52,128,0) (76,152,2)
+	draw_arc(52,128,0,LOGOC); draw_arc(76,153,2,LOGOC);
+	splash_delay(SPLASH_DELAY);
+	// A  arc (52,70,0) (76,70,1) (134,94,2) (52,94,3) box (92,94,100,118)
+	draw_arc(52,70,0,LOGOC); draw_arc(76,70,1,LOGOC); draw_arc(76,95,2,LOGOC); draw_arc(52,95,3,LOGOC); tft_fill_area(92,94,8,24,LOGOC);
+	splash_delay(SPLASH_DELAY);
+	// H  arc (52,17,0) (76,17,1) box (52,12,60,60) (92,37,100,60)
+	draw_arc(52,17,0,LOGOC); draw_arc(77,17,1,LOGOC); tft_fill_area(52,12,8,48,LOGOC); tft_fill_area(93,37,8,23,LOGOC);
+	splash_delay(SPLASH_DELAY);
+	// A  arc (110,12,0) (134,12,1) (134,36,2) (110,36,3) box (149,36,157,60)
+	draw_arc(110,12,0,LOGOC); draw_arc(134,12,1,LOGOC); draw_arc(134,37,2,LOGOC); draw_arc(110,37,3,LOGOC); tft_fill_area(150,36,8,25,LOGOC);
+	splash_delay(SPLASH_DELAY);
+	// C  arc (167,17,0) (167,36,3) box (190,12,215,20) (190,52,215,60)
+	draw_arc(167,12,0,LOGOC); draw_arc(167,37,3,LOGOC); tft_fill_area(190,12,25,8,LOGOC); tft_fill_area(190,53,25,8,LOGOC);
+	splash_delay(SPLASH_DELAY);
+	// K  arc (248,17,2) (248,36,1) bot (225,12,233,60)
+	draw_arc(248,12,2,LOGOC); draw_arc(248,37,1,LOGOC); tft_fill_area(225,12,8,48,LOGOC);
+	splash_delay(SPLASH_DELAY);
+	// Y  arc (225,70,3) (249,70,2) box (244,90,252,118)
+	draw_arc(225,70,3,LOGOC); draw_arc(249,70,2,LOGOC); tft_fill_area(244,90,8,29,LOGOC);
+	splash_delay(SPLASH_DELAY);
+	// E arc (225,128,0) (249,128,1) (225,152,3)
+	draw_arc(225,128,0,LOGOC); draw_arc(249,128,1,LOGOC); draw_arc(225,153,3,LOGOC);
+	splash_delay(SPLASH_DELAY);
+	// N arc (225,186,0) (249,186,1) box (225,210,8,25) (266,210,8,25)
+	draw_arc(225,186,0,LOGOC); draw_arc(249,186,1,LOGOC); tft_fill_area(225,210,8,25,LOGOC); tft_fill_area(265,210,8,25,LOGOC);
+	splash_delay(2000);
+	//while (1) { ;; }
 	/*
     struct Cipher_box box0 = { 0, 0 };
     struct Cipher_box box1 = { 319+(10*CIPHER_CHAR_WIDTH), 1 };
