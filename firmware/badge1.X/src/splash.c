@@ -29,6 +29,8 @@ const uint32_t arc[25] = {
   0b00000001111111110000000000000000
 };
 
+#define LOGOC	0xFF0000
+
 /*** Orientations ***
   0 = top left arc
   1 = top right arc
@@ -202,10 +204,30 @@ void animate_splash(void)
     uint16_t splash_waitfor = 0;
     
 	tft_fill_area(0,0,320,240,CIPHER_BACKGROUND);    //Make display black
+	
+	// H  arc (52,17,0) (76,17,1) box (52,12,60,60) (92,37,100,60)
+	draw_arc(52,17,0,LOGOC); draw_arc(77,17,1,LOGOC); tft_fill_area(52,12,8,48,LOGOC); tft_fill_area(93,37,8,23,LOGOC); 
+	// A  arc (110,12,0) (134,12,1) (134,36,2) (110,36,3) box (149,36,157,60)
+	draw_arc(110,12,0,LOGOC); draw_arc(134,12,1,LOGOC); draw_arc(134,36,2,LOGOC); draw_arc(110,36,3,LOGOC); tft_fill_area(150,36,8,24,LOGOC);
+	// C  arc (167,17,0) (167,36,3) box (190,12,215,20) (190,52,215,60)
+	draw_arc(167,12,0,LOGOC); draw_arc(167,36,3,LOGOC); tft_fill_area(190,12,25,8,LOGOC); tft_fill_area(190,52,25,8,LOGOC);
+	// K  arc (248,17,2) (248,36,1) bot (225,12,233,60)
+	draw_arc(248,12,2,LOGOC); draw_arc(248,36,1,LOGOC); tft_fill_area(225,12,8,48,LOGOC);
+	// A  arc (52,70,0) (76,70,1) (134,94,2) (52,94,3) box (92,94,100,118)
+	draw_arc(52,70,0,LOGOC); draw_arc(76,70,1,LOGOC); draw_arc(76,94,2,LOGOC); draw_arc(52,94,3,LOGOC); tft_fill_area(92,94,8,24,LOGOC);
+	// D  arc (110,70,0) (134,70,1) (134,94,2) (110,36,3) box (149,70,157,93)
+	draw_arc(110,70,0,LOGOC); draw_arc(134,70,1,LOGOC); draw_arc(134,94,2,LOGOC); draw_arc(110,94,3,LOGOC); tft_fill_area(150,70,8,24,LOGOC);
+	// A  arc (167,70,0) (191,70,1) (191,94,2) (167,36,3) box (207,94,215,118)
+	draw_arc(167,70,0,LOGOC); draw_arc(191,70,1,LOGOC); draw_arc(191,94,2,LOGOC); draw_arc(167,94,3,LOGOC); tft_fill_area(207,94,8,24,LOGOC);
+	// Y  arc (225,70,3) (249,70,2) box (244,90,252,118)
+	draw_arc(225,70,3,LOGOC); draw_arc(249,70,2,LOGOC); tft_fill_area(244,90,8,28,LOGOC);
+	
+	/*
 	draw_arc(10,10,0,0xFF0000);
 	draw_arc(35,10,1,0xFF0000);
 	draw_arc(35,35,2,0xFF0000);
 	draw_arc(10,35,3,0xFF0000);
+	 */
 	while (1) { ;; }
 	/*
     struct Cipher_box box0 = { 0, 0 };
