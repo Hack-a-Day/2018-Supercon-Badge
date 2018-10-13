@@ -302,7 +302,6 @@ void animate_splash(void)
 	for (i=0; i<9600; i++) { ram[i] = 0; }
     
 	tft_fill_area(0,0,320,240,CIPHER_BACKGROUND);    //Make display black
-	splash_delay(1300);
 	spoffsetx = 6;
 	spoffsety = 6;
 	spcolor = 0x0016aeef;
