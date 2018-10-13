@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="65">
+<configurationDescriptor version="62">
   <logicalFolder name="root" displayName="root" projectFiles="true">
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
@@ -83,12 +83,9 @@
         <targetPluginBoard></targetPluginBoard>
         <platformTool>pk4hybrid</platformTool>
         <languageToolchain>XC32</languageToolchain>
-        <languageToolchainVersion>2.10</languageToolchainVersion>
+        <languageToolchainVersion>2.05</languageToolchainVersion>
         <platform>2</platform>
       </toolsSet>
-      <packs>
-        <pack name="PIC32MX_DFP" vendor="Microchip" version="1.0.23"/>
-      </packs>
       <compileType>
         <linkerTool>
           <linkerLibItems>
@@ -98,7 +95,7 @@
         </archiverTool>
         <loading>
           <useAlternateLoadableFile>false</useAlternateLoadableFile>
-          <parseOnProdLoad>false</parseOnProdLoad>
+          <parseOnProdLoad>true</parseOnProdLoad>
           <alternateLoadableFile></alternateLoadableFile>
         </loading>
         <subordinates>
@@ -126,7 +123,7 @@
         <property key="generate-micro-compressed-code" value="false"/>
         <property key="isolate-each-function" value="false"/>
         <property key="make-warnings-into-errors" value="false"/>
-        <property key="optimization-level" value="-Os"/>
+        <property key="optimization-level" value="-O1"/>
         <property key="place-data-into-section" value="false"/>
         <property key="post-instruction-scheduling" value="default"/>
         <property key="pre-instruction-scheduling" value="default"/>
@@ -820,8 +817,7 @@
         <property key="TIMER5" value="true"/>
         <property key="ToolFirmwareFilePath"
                   value="Press to browse for a specific firmware version"/>
-        <property key="ToolFirmwareOption.UpdateOptions"
-                  value="ToolFirmwareOption.UseLatest"/>
+        <property key="ToolFirmwareOption.UseLatestFirmware" value="true"/>
         <property key="UART1" value="true"/>
         <property key="UART2" value="true"/>
         <property key="UART3" value="true"/>
