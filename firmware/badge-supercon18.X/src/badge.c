@@ -624,7 +624,11 @@ uint8_t playriff(uint8_t raisetop)
 //housekeeping stuff. call this function often
 void loop_badge(void)
 	{
+	volatile uint16_t dbg;
 	static uint8_t brk_is_pressed;
+	dbg = PORTD;
+	
+	return;
 	if (K_PWR==0)
 		{
 		while (K_PWR==0);
