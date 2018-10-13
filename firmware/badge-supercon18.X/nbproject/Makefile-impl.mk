@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=badge1.X
+PROJECTNAME=badge-supercon18.X
 
 # Active Configuration
 DEFAULTCONF=default
