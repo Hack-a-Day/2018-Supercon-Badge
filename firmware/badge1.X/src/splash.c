@@ -29,7 +29,8 @@ const uint32_t arc[25] = {
   0b00000001111111110000000000000000
 };
 
-uint32_t shadow[2400];
+extern uint8_t ram[65536L];
+//uint32_t shadow[2400];
 
 #define SPLASH_DELAY	100
 #define SPLASH_X_LOC	52
@@ -71,7 +72,7 @@ void draw_and_record_pixel(uint16_t actualx, uint16_t actualy, uint32_t back)
 	{
 	//actualx += SPLASH_X_LOC;
 	//actualy += SPLASH_Y_LOC;
-	shadow[(actualy*10)+(actualx/32)] |= (1<<(actualx%32));
+	ram[(actualy*40)+(actualx/8)] |= (1<<(actualx%8));
 	TFT_24_7789_Write_Data3((back>>16)&0xFF,(back>>8)&0xFF,(back>>0)&0xFF);
 	}
 
@@ -83,7 +84,7 @@ void draw_and_record_box(uint16_t actualx, uint16_t actualy, uint16_t width, uin
 		{
 		for (j=0; j<width; j++)
 			{
-			shadow[((actualy+i)*10)+((actualx+j)/32)] |= (1<<((actualx+j)%32));
+			ram[((actualy+i)*40)+((actualx+j)/8)] |= (1<<((actualx+j)%8));
 			}
 		}
 	}
@@ -91,7 +92,7 @@ void draw_bg_or_not (uint16_t actualx, uint16_t actualy)
 	{
 	//actualx += SPLASH_X_LOC;
 	//actualy += SPLASH_Y_LOC;
-	if (shadow[(actualy*10)+(actualx/32)] & (1<<(actualx%32))) TFT_24_7789_Write_Data3(0x16,0xae,0xef);
+	if (ram[(actualy*40)+(actualx/8)] & (1<<(actualx%8))) TFT_24_7789_Write_Data3(0x16,0xae,0xef);
 	else TFT_24_7789_Write_Data3(0,0,0);
 	}
 
@@ -298,7 +299,7 @@ void animate_splash(void)
 	uint32_t spcolor;
 	
 	//while(1) {
-	for (i=0; i<2400; i++) { shadow[i] = 0; }
+	for (i=0; i<9600; i++) { ram[i] = 0; }
     
 	tft_fill_area(0,0,320,240,CIPHER_BACKGROUND);    //Make display black
 	splash_delay(1300);
