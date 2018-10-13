@@ -29,8 +29,11 @@ const uint32_t arc[25] = {
   0b00000001111111110000000000000000
 };
 
-#define LOGOC			0xFF0000
-#define SPLASH_DELAY	140
+uint32_t shadow[2400];
+
+#define SPLASH_DELAY	100
+#define SPLASH_X_LOC	52
+#define SPLASH_Y_LOC	17
 
 /*** Orientations ***
   0 = top left arc
@@ -64,9 +67,37 @@ const uint32_t arc[25] = {
 // O arc (167,186,0) (191,186,1) (191,210,2) (167,210,3)
 // N arc (225,186,0) (249,186,1) box (225,210,8,25) (266,210,8,25)
 
+void draw_and_record_pixel(uint16_t actualx, uint16_t actualy, uint32_t back)
+	{
+	//actualx += SPLASH_X_LOC;
+	//actualy += SPLASH_Y_LOC;
+	shadow[(actualy*10)+(actualx/32)] |= (1<<(actualx%32));
+	TFT_24_7789_Write_Data3((back>>16)&0xFF,(back>>8)&0xFF,(back>>0)&0xFF);
+	}
+
+void draw_and_record_box(uint16_t actualx, uint16_t actualy, uint16_t width, uint16_t height, uint32_t back)
+	{
+	tft_fill_area(actualx, actualy, width, height, back);
+	uint16_t i,j;
+	for (i=0; i<height; i++)
+		{
+		for (j=0; j<width; j++)
+			{
+			shadow[((actualy+i)*10)+((actualx+j)/32)] |= (1<<((actualx+j)%32));
+			}
+		}
+	}
+void draw_bg_or_not (uint16_t actualx, uint16_t actualy)
+	{
+	//actualx += SPLASH_X_LOC;
+	//actualy += SPLASH_Y_LOC;
+	if (shadow[(actualy*10)+(actualx/32)] & (1<<(actualx%32))) TFT_24_7789_Write_Data3(0x16,0xae,0xef);
+	else TFT_24_7789_Write_Data3(0,0,0);
+	}
+
 void draw_arc (uint16_t x, uint16_t y, uint8_t rotate, uint32_t back)
 {
-  uint32_t i,j;
+  uint16_t i,j;
   tft_set_write_area(x,y,24,24);
   TFT_24_7789_Write_Command(0x2C);
 
@@ -80,23 +111,23 @@ void draw_arc (uint16_t x, uint16_t y, uint8_t rotate, uint32_t back)
 		//TODO: Test for arc 1 or 0 and place color pixel as necessary
 		if (rotate == 0)
 			{
-			if (arc[i] & 1<<(24-j)) TFT_24_7789_Write_Data3((back>>16)&0xFF,(back>>8)&0xFF,(back>>0)&0xFF);
-			else TFT_24_7789_Write_Data3(0,0,0);
+			if (arc[i] & 1<<(24-j)) draw_and_record_pixel(x+i,y+j,back);
+			else draw_bg_or_not(x+i,y+j);
 			}
 		else if (rotate == 1)
 			{
-			if (arc[24-j] & 1<<(24-i)) TFT_24_7789_Write_Data3((back>>16)&0xFF,(back>>8)&0xFF,(back>>0)&0xFF);
-			else TFT_24_7789_Write_Data3(0,0,0);
+			if (arc[24-j] & 1<<(24-i)) draw_and_record_pixel(x+j,y+i,back);
+			else draw_bg_or_not(x+j,y+i);
 			}
 		else if (rotate == 2)
 			{
-			if (arc[24-i] & 1<<(j)) TFT_24_7789_Write_Data3((back>>16)&0xFF,(back>>8)&0xFF,(back>>0)&0xFF);
-			else TFT_24_7789_Write_Data3(0,0,0);
+			if (arc[24-i] & 1<<(j)) draw_and_record_pixel(x+i,y+j,back);
+			else draw_bg_or_not(x+i,y+j);
 			}
 		else if (rotate == 3)
 			{
-			if (arc[j] & 1<<(i)) TFT_24_7789_Write_Data3((back>>16)&0xFF,(back>>8)&0xFF,(back>>0)&0xFF);
-			else TFT_24_7789_Write_Data3(0,0,0);
+			if (arc[j] & 1<<(i)) draw_and_record_pixel(x+j,y+i,back);
+			else draw_bg_or_not(x+j,y+i);
 			}
 		}
 		//TFT_24_7789_Write_Data3((back>>16)&0xFF,(back>>8)&0xFF,(back>>0)&0xFF);
@@ -217,45 +248,43 @@ void splash_delay(uint32_t delay)
 
 void animate_splash(void)
 {
-    uint16_t x = 0;
+    uint16_t i;
     
-    
-	tft_fill_area(0,0,320,240,CIPHER_BACKGROUND);    //Make display black
 	
 	/*
 	// H  arc (52,17,0) (76,17,1) box (52,12,60,60) (92,37,100,60)
-	draw_arc(52,17,0,LOGOC); draw_arc(77,17,1,LOGOC); tft_fill_area(52,12,8,48,LOGOC); tft_fill_area(93,37,8,23,LOGOC); 
+	draw_arc(52,17,0,spcolor); draw_arc(77,17,1,spcolor); tft_fill_area(52,12,8,48,spcolor); tft_fill_area(93,37,8,23,spcolor); 
 	// A  arc (110,12,0) (134,12,1) (134,36,2) (110,36,3) box (149,36,157,60)
-	draw_arc(110,12,0,LOGOC); draw_arc(134,12,1,LOGOC); draw_arc(134,37,2,LOGOC); draw_arc(110,37,3,LOGOC); tft_fill_area(150,36,8,25,LOGOC);
+	draw_arc(110,12,0,spcolor); draw_arc(134,12,1,spcolor); draw_arc(134,37,2,spcolor); draw_arc(110,37,3,spcolor); tft_fill_area(150,36,8,25,spcolor);
 	// C  arc (167,17,0) (167,36,3) box (190,12,215,20) (190,52,215,60)
-	draw_arc(167,12,0,LOGOC); draw_arc(167,37,3,LOGOC); tft_fill_area(190,12,25,8,LOGOC); tft_fill_area(190,53,25,8,LOGOC);
+	draw_arc(167,12,0,spcolor); draw_arc(167,37,3,spcolor); tft_fill_area(190,12,25,8,spcolor); tft_fill_area(190,53,25,8,spcolor);
 	// K  arc (248,17,2) (248,36,1) bot (225,12,233,60)
-	draw_arc(248,12,2,LOGOC); draw_arc(248,37,1,LOGOC); tft_fill_area(225,12,8,48,LOGOC);
+	draw_arc(248,12,2,spcolor); draw_arc(248,37,1,spcolor); tft_fill_area(225,12,8,48,spcolor);
 	// A  arc (52,70,0) (76,70,1) (134,94,2) (52,94,3) box (92,94,100,118)
-	draw_arc(52,70,0,LOGOC); draw_arc(76,70,1,LOGOC); draw_arc(76,95,2,LOGOC); draw_arc(52,95,3,LOGOC); tft_fill_area(92,94,8,24,LOGOC);
+	draw_arc(52,70,0,spcolor); draw_arc(76,70,1,spcolor); draw_arc(76,95,2,spcolor); draw_arc(52,95,3,spcolor); tft_fill_area(92,94,8,24,spcolor);
 	// D  arc (110,70,0) (134,70,1) (134,94,2) (110,36,3) box (149,70,157,93)
-	draw_arc(110,70,0,LOGOC); draw_arc(134,70,1,LOGOC); draw_arc(134,95,2,LOGOC); draw_arc(110,95,3,LOGOC); tft_fill_area(150,70,8,24,LOGOC);
+	draw_arc(110,70,0,spcolor); draw_arc(134,70,1,spcolor); draw_arc(134,95,2,spcolor); draw_arc(110,95,3,spcolor); tft_fill_area(150,70,8,24,spcolor);
 	// A  arc (167,70,0) (191,70,1) (191,94,2) (167,36,3) box (207,94,215,118)
-	draw_arc(167,70,0,LOGOC); draw_arc(191,70,1,LOGOC); draw_arc(191,95,2,LOGOC); draw_arc(167,95,3,LOGOC); tft_fill_area(207,94,8,25,LOGOC);
+	draw_arc(167,70,0,spcolor); draw_arc(191,70,1,spcolor); draw_arc(191,95,2,spcolor); draw_arc(167,95,3,spcolor); tft_fill_area(207,94,8,25,spcolor);
 	// Y  arc (225,70,3) (249,70,2) box (244,90,252,118)
-	draw_arc(225,70,3,LOGOC); draw_arc(249,70,2,LOGOC); tft_fill_area(244,90,8,29,LOGOC);
+	draw_arc(225,70,3,spcolor); draw_arc(249,70,2,spcolor); tft_fill_area(244,90,8,29,spcolor);
 	
 	// S arc (52,128,0) (76,152,2)
-	draw_arc(52,128,0,LOGOC); draw_arc(76,153,2,LOGOC);
+	draw_arc(52,128,0,spcolor); draw_arc(76,153,2,spcolor);
 	// U arc (110,152,3) (134,152,2) box (110,128,8,24) (150,128,8,24)
-	draw_arc(110,153,3,LOGOC); draw_arc(134,153,2,LOGOC); tft_fill_area(110,128,8,24,LOGOC); tft_fill_area(150,128,8,24,LOGOC);
+	draw_arc(110,153,3,spcolor); draw_arc(134,153,2,spcolor); tft_fill_area(110,128,8,24,spcolor); tft_fill_area(150,128,8,24,spcolor);
 	// P arc (167,128,0) (191,128,1) (191,152,2) (167,152,3) box (167,152,8,25)
-	draw_arc(167,128,0,LOGOC); draw_arc(191,128,1,LOGOC); draw_arc(191,153,2,LOGOC); draw_arc(167,153,3,LOGOC); tft_fill_area(167,152,8,25,LOGOC);
+	draw_arc(167,128,0,spcolor); draw_arc(191,128,1,spcolor); draw_arc(191,153,2,spcolor); draw_arc(167,153,3,spcolor); tft_fill_area(167,152,8,25,spcolor);
 	// E arc (225,128,0) (249,128,1) (225,152,3)
-	draw_arc(225,128,0,LOGOC); draw_arc(249,128,1,LOGOC); draw_arc(225,153,3,LOGOC);
+	draw_arc(225,128,0,spcolor); draw_arc(249,128,1,spcolor); draw_arc(225,153,3,spcolor);
 	// R arc (52,186,0) (76,186,1) box (52,210,8,25)
-	draw_arc(52,186,0,LOGOC); draw_arc(76,186,1,LOGOC); tft_fill_area(52,210,8,25,LOGOC);
+	draw_arc(52,186,0,spcolor); draw_arc(76,186,1,spcolor); tft_fill_area(52,210,8,25,spcolor);
 	// C arc (110,186,0) (110,210,3) box (134,186,24,8) (134,227,24,8)
-	draw_arc(110,186,0,LOGOC); draw_arc(110,211,3,LOGOC); tft_fill_area(134,186,24,8,LOGOC); tft_fill_area(134,227,24,8,LOGOC);
+	draw_arc(110,186,0,spcolor); draw_arc(110,211,3,spcolor); tft_fill_area(134,186,24,8,spcolor); tft_fill_area(134,227,24,8,spcolor);
 	// O arc (167,186,0) (191,186,1) (191,210,2) (167,210,3)
-	draw_arc(167,186,0,LOGOC); draw_arc(191,186,1,LOGOC); draw_arc(191,211,2,LOGOC); draw_arc(167,211,3,LOGOC);
+	draw_arc(167,186,0,spcolor); draw_arc(191,186,1,spcolor); draw_arc(191,211,2,spcolor); draw_arc(167,211,3,spcolor);
 	// N arc (225,186,0) (249,186,1) box (225,210,8,25) (266,210,8,25)
-	draw_arc(225,186,0,LOGOC); draw_arc(249,186,1,LOGOC); tft_fill_area(225,210,8,25,LOGOC); tft_fill_area(265,210,8,25,LOGOC);
+	draw_arc(225,186,0,spcolor); draw_arc(249,186,1,spcolor); tft_fill_area(225,210,8,25,spcolor); tft_fill_area(265,210,8,25,spcolor);
 	*/
 	
 	/*
@@ -264,56 +293,124 @@ void animate_splash(void)
 	draw_arc(35,35,2,0xFF0000);
 	draw_arc(10,35,3,0xFF0000);
 	 */
+
+	uint16_t spoffsetx, spoffsety;
+	uint32_t spcolor;
+	
+	//while(1) {
+	for (i=0; i<2400; i++) { shadow[i] = 0; }
+    
+	tft_fill_area(0,0,320,240,CIPHER_BACKGROUND);    //Make display black
+	splash_delay(1300);
+	spoffsetx = 6;
+	spoffsety = 6;
+	spcolor = 0x0016aeef;
+	
 	
 	// U arc (110,152,3) (134,152,2) box (110,128,8,24) (150,128,8,24)
-	draw_arc(110,153,3,LOGOC); draw_arc(134,153,2,LOGOC); tft_fill_area(110,128,8,24,LOGOC); tft_fill_area(150,128,8,24,LOGOC);
+	draw_arc(110-spoffsetx,153-spoffsety,3,spcolor); draw_arc(134-spoffsetx,153-spoffsety,2,spcolor); draw_and_record_box(110-spoffsetx,128-spoffsety,8,24,spcolor); draw_and_record_box(150-spoffsetx,128-spoffsety,8,24,spcolor);
 	splash_delay(SPLASH_DELAY);
 	// D  arc (110,70,0) (134,70,1) (134,94,2) (110,36,3) box (149,70,157,93)
-	draw_arc(110,70,0,LOGOC); draw_arc(134,70,1,LOGOC); draw_arc(134,95,2,LOGOC); draw_arc(110,95,3,LOGOC); tft_fill_area(150,70,8,24,LOGOC);
+	draw_arc(110-spoffsetx,70-spoffsety,0,spcolor); draw_arc(134-spoffsetx,70-spoffsety,1,spcolor); draw_arc(134-spoffsetx,95-spoffsety,2,spcolor); draw_arc(110-spoffsetx,95-spoffsety,3,spcolor); draw_and_record_box(150-spoffsetx,70-spoffsety,8,24,spcolor);
 	splash_delay(SPLASH_DELAY);
 	// A  arc (167,70,0) (191,70,1) (191,94,2) (167,36,3) box (207,94,215,118)
-	draw_arc(167,70,0,LOGOC); draw_arc(191,70,1,LOGOC); draw_arc(191,95,2,LOGOC); draw_arc(167,95,3,LOGOC); tft_fill_area(207,94,8,25,LOGOC);
+	draw_arc(167-spoffsetx,70-spoffsety,0,spcolor); draw_arc(191-spoffsetx,70-spoffsety,1,spcolor); draw_arc(191-spoffsetx,95-spoffsety,2,spcolor); draw_arc(167-spoffsetx,95-spoffsety,3,spcolor); draw_and_record_box(207-spoffsetx,94-spoffsety,8,25,spcolor);
 	splash_delay(SPLASH_DELAY);
 	// P arc (167,128,0) (191,128,1) (191,152,2) (167,152,3) box (167,152,8,25)
-	draw_arc(167,128,0,LOGOC); draw_arc(191,128,1,LOGOC); draw_arc(191,153,2,LOGOC); draw_arc(167,153,3,LOGOC); tft_fill_area(167,152,8,25,LOGOC);
+	draw_arc(167-spoffsetx,128-spoffsety,0,spcolor); draw_arc(191-spoffsetx,128-spoffsety,1,spcolor); draw_arc(191-spoffsetx,153-spoffsety,2,spcolor); draw_arc(167-spoffsetx,153-spoffsety,3,spcolor); draw_and_record_box(167-spoffsetx,152-spoffsety,8,25,spcolor);
 	splash_delay(SPLASH_DELAY);
 	// O arc (167,186,0) (191,186,1) (191,210,2) (167,210,3)
-	draw_arc(167,186,0,LOGOC); draw_arc(191,186,1,LOGOC); draw_arc(191,211,2,LOGOC); draw_arc(167,211,3,LOGOC);
+	draw_arc(167-spoffsetx,186-spoffsety,0,spcolor); draw_arc(191-spoffsetx,186-spoffsety,1,spcolor); draw_arc(191-spoffsetx,211-spoffsety,2,spcolor); draw_arc(167-spoffsetx,211-spoffsety,3,spcolor);
 	splash_delay(SPLASH_DELAY);
 	// C arc (110,186,0) (110,210,3) box (134,186,24,8) (134,227,24,8)
-	draw_arc(110,186,0,LOGOC); draw_arc(110,211,3,LOGOC); tft_fill_area(134,186,24,8,LOGOC); tft_fill_area(134,227,24,8,LOGOC);
+	draw_arc(110-spoffsetx,186-spoffsety,0,spcolor); draw_arc(110-spoffsetx,211-spoffsety,3,spcolor); draw_and_record_box(134-spoffsetx,186-spoffsety,24,8,spcolor); draw_and_record_box(134-spoffsetx,227-spoffsety,24,8,spcolor);
 	splash_delay(SPLASH_DELAY);
 	// R arc (52,186,0) (76,186,1) box (52,210,8,25)
-	draw_arc(52,186,0,LOGOC); draw_arc(76,186,1,LOGOC); tft_fill_area(52,210,8,25,LOGOC);
+	draw_arc(52-spoffsetx,186-spoffsety,0,spcolor); draw_arc(76-spoffsetx,186-spoffsety,1,spcolor); draw_and_record_box(52-spoffsetx,210-spoffsety,8,25,spcolor);
 	splash_delay(SPLASH_DELAY);
 	// S arc (52,128,0) (76,152,2)
-	draw_arc(52,128,0,LOGOC); draw_arc(76,153,2,LOGOC);
+	draw_arc(52-spoffsetx,128-spoffsety,0,spcolor); draw_arc(76-spoffsetx,153-spoffsety,2,spcolor);
 	splash_delay(SPLASH_DELAY);
 	// A  arc (52,70,0) (76,70,1) (134,94,2) (52,94,3) box (92,94,100,118)
-	draw_arc(52,70,0,LOGOC); draw_arc(76,70,1,LOGOC); draw_arc(76,95,2,LOGOC); draw_arc(52,95,3,LOGOC); tft_fill_area(92,94,8,24,LOGOC);
+	draw_arc(52-spoffsetx,70-spoffsety,0,spcolor); draw_arc(76-spoffsetx,70-spoffsety,1,spcolor); draw_arc(76-spoffsetx,95-spoffsety,2,spcolor); draw_arc(52-spoffsetx,95-spoffsety,3,spcolor); draw_and_record_box(92-spoffsetx,94-spoffsety,8,24,spcolor);
 	splash_delay(SPLASH_DELAY);
 	// H  arc (52,17,0) (76,17,1) box (52,12,60,60) (92,37,100,60)
-	draw_arc(52,17,0,LOGOC); draw_arc(77,17,1,LOGOC); tft_fill_area(52,12,8,48,LOGOC); tft_fill_area(93,37,8,23,LOGOC);
+	draw_arc(52-spoffsetx,17-spoffsety,0,spcolor); draw_arc(77-spoffsetx,17-spoffsety,1,spcolor); draw_and_record_box(52-spoffsetx,12-spoffsety,8,48,spcolor); draw_and_record_box(93-spoffsetx,37-spoffsety,8,23,spcolor);
 	splash_delay(SPLASH_DELAY);
 	// A  arc (110,12,0) (134,12,1) (134,36,2) (110,36,3) box (149,36,157,60)
-	draw_arc(110,12,0,LOGOC); draw_arc(134,12,1,LOGOC); draw_arc(134,37,2,LOGOC); draw_arc(110,37,3,LOGOC); tft_fill_area(150,36,8,25,LOGOC);
+	draw_arc(110-spoffsetx,12-spoffsety,0,spcolor); draw_arc(134-spoffsetx,12-spoffsety,1,spcolor); draw_arc(134-spoffsetx,37-spoffsety,2,spcolor); draw_arc(110-spoffsetx,37-spoffsety,3,spcolor); draw_and_record_box(150-spoffsetx,36-spoffsety,8,25,spcolor);
 	splash_delay(SPLASH_DELAY);
 	// C  arc (167,17,0) (167,36,3) box (190,12,215,20) (190,52,215,60)
-	draw_arc(167,12,0,LOGOC); draw_arc(167,37,3,LOGOC); tft_fill_area(190,12,25,8,LOGOC); tft_fill_area(190,53,25,8,LOGOC);
+	draw_arc(167-spoffsetx,12-spoffsety,0,spcolor); draw_arc(167-spoffsetx,37-spoffsety,3,spcolor); draw_and_record_box(190-spoffsetx,12-spoffsety,25,8,spcolor); draw_and_record_box(190-spoffsetx,53-spoffsety,25,8,spcolor);
 	splash_delay(SPLASH_DELAY);
 	// K  arc (248,17,2) (248,36,1) bot (225,12,233,60)
-	draw_arc(248,12,2,LOGOC); draw_arc(248,37,1,LOGOC); tft_fill_area(225,12,8,48,LOGOC);
+	draw_arc(248-spoffsetx,12-spoffsety,2,spcolor); draw_arc(248-spoffsetx,37-spoffsety,1,spcolor); draw_and_record_box(225-spoffsetx,12-spoffsety,8,48,spcolor);
 	splash_delay(SPLASH_DELAY);
 	// Y  arc (225,70,3) (249,70,2) box (244,90,252,118)
-	draw_arc(225,70,3,LOGOC); draw_arc(249,70,2,LOGOC); tft_fill_area(244,90,8,29,LOGOC);
+	draw_arc(225-spoffsetx,70-spoffsety,3,spcolor); draw_arc(249-spoffsetx,70-spoffsety,2,spcolor); draw_and_record_box(244-spoffsetx,90-spoffsety,8,29,spcolor);
 	splash_delay(SPLASH_DELAY);
 	// E arc (225,128,0) (249,128,1) (225,152,3)
-	draw_arc(225,128,0,LOGOC); draw_arc(249,128,1,LOGOC); draw_arc(225,153,3,LOGOC);
+	draw_arc(225-spoffsetx,128-spoffsety,0,spcolor); draw_arc(249-spoffsetx,128-spoffsety,1,spcolor); draw_arc(225-spoffsetx,153-spoffsety,3,spcolor);
 	splash_delay(SPLASH_DELAY);
 	// N arc (225,186,0) (249,186,1) box (225,210,8,25) (266,210,8,25)
-	draw_arc(225,186,0,LOGOC); draw_arc(249,186,1,LOGOC); tft_fill_area(225,210,8,25,LOGOC); tft_fill_area(265,210,8,25,LOGOC);
-	splash_delay(2000);
-	//while (1) { ;; }
+	draw_arc(225-spoffsetx,186-spoffsety,0,spcolor); draw_arc(249-spoffsetx,186-spoffsety,1,spcolor); draw_and_record_box(225-spoffsetx,210-spoffsety,8,25,spcolor); draw_and_record_box(265-spoffsetx,210-spoffsety,8,25,spcolor);
+	splash_delay(SPLASH_DELAY);
+	
+	spoffsetx = 0;
+	spoffsety = 0;
+	spcolor = 0x00FFFFFF;
+	
+	// H  arc (52,17,0) (76,17,1) box (52,12,60,60) (92,37,100,60)
+	draw_arc(52-spoffsetx,17-spoffsety,0,spcolor); draw_arc(77-spoffsetx,17-spoffsety,1,spcolor); tft_fill_area(52-spoffsetx,12-spoffsety,8,48,spcolor); tft_fill_area(93-spoffsetx,37-spoffsety,8,23,spcolor);
+	splash_delay(SPLASH_DELAY);
+	// A  arc (110,12,0) (134,12,1) (134,36,2) (110,36,3) box (149,36,157,60)
+	draw_arc(110-spoffsetx,12-spoffsety,0,spcolor); draw_arc(134-spoffsetx,12-spoffsety,1,spcolor); draw_arc(134-spoffsetx,37-spoffsety,2,spcolor); draw_arc(110-spoffsetx,37-spoffsety,3,spcolor); tft_fill_area(150-spoffsetx,36-spoffsety,8,25,spcolor);
+	splash_delay(SPLASH_DELAY);
+	// C  arc (167,17,0) (167,36,3) box (190,12,215,20) (190,52,215,60)
+	draw_arc(167-spoffsetx,12-spoffsety,0,spcolor); draw_arc(167-spoffsetx,37-spoffsety,3,spcolor); tft_fill_area(190-spoffsetx,12-spoffsety,25,8,spcolor); tft_fill_area(190-spoffsetx,53-spoffsety,25,8,spcolor);
+	splash_delay(SPLASH_DELAY);
+	// K  arc (248,17,2) (248,36,1) bot (225,12,233,60)
+	draw_arc(248-spoffsetx,12-spoffsety,2,spcolor); draw_arc(248-spoffsetx,37-spoffsety,1,spcolor); tft_fill_area(225-spoffsetx,12-spoffsety,8,48,spcolor);
+	splash_delay(SPLASH_DELAY);
+	// A  arc (52,70,0) (76,70,1) (134,94,2) (52,94,3) box (92,94,100,118)
+	draw_arc(52-spoffsetx,70-spoffsety,0,spcolor); draw_arc(76-spoffsetx,70-spoffsety,1,spcolor); draw_arc(76-spoffsetx,95-spoffsety,2,spcolor); draw_arc(52-spoffsetx,95-spoffsety,3,spcolor); tft_fill_area(92-spoffsetx,94-spoffsety,8,24,spcolor);
+	splash_delay(SPLASH_DELAY);
+	// D  arc (110,70,0) (134,70,1) (134,94,2) (110,36,3) box (149,70,157,93)
+	draw_arc(110-spoffsetx,70-spoffsety,0,spcolor); draw_arc(134-spoffsetx,70-spoffsety,1,spcolor); draw_arc(134-spoffsetx,95-spoffsety,2,spcolor); draw_arc(110-spoffsetx,95-spoffsety,3,spcolor); tft_fill_area(150-spoffsetx,70-spoffsety,8,24,spcolor);
+	splash_delay(SPLASH_DELAY);
+	// A  arc (167,70,0) (191,70,1) (191,94,2) (167,36,3) box (207,94,215,118)
+	draw_arc(167-spoffsetx,70-spoffsety,0,spcolor); draw_arc(191-spoffsetx,70-spoffsety,1,spcolor); draw_arc(191-spoffsetx,95-spoffsety,2,spcolor); draw_arc(167-spoffsetx,95-spoffsety,3,spcolor); tft_fill_area(207-spoffsetx,94-spoffsety,8,25,spcolor);
+	splash_delay(SPLASH_DELAY);
+	// Y  arc (225,70,3) (249,70,2) box (244,90,252,118)
+	draw_arc(225-spoffsetx,70-spoffsety,3,spcolor); draw_arc(249-spoffsetx,70-spoffsety,2,spcolor); tft_fill_area(244-spoffsetx,90-spoffsety,8,29,spcolor);
+	splash_delay(SPLASH_DELAY);
+	// S arc (52,128,0) (76,152,2)
+	draw_arc(52-spoffsetx,128-spoffsety,0,spcolor); draw_arc(76-spoffsetx,153-spoffsety,2,spcolor);
+	splash_delay(SPLASH_DELAY);
+	// U arc (110,152,3) (134,152,2) box (110,128,8,24) (150,128,8,24)
+	draw_arc(110-spoffsetx,153-spoffsety,3,spcolor); draw_arc(134-spoffsetx,153-spoffsety,2,spcolor); draw_and_record_box(110-spoffsetx,128-spoffsety,8,24,spcolor); tft_fill_area(150-spoffsetx,128-spoffsety,8,24,spcolor);
+	splash_delay(SPLASH_DELAY);
+	// P arc (167,128,0) (191,128,1) (191,152,2) (167,152,3) box (167,152,8,25)
+	draw_arc(167-spoffsetx,128-spoffsety,0,spcolor); draw_arc(191-spoffsetx,128-spoffsety,1,spcolor); draw_arc(191-spoffsetx,153-spoffsety,2,spcolor); draw_arc(167-spoffsetx,153-spoffsety,3,spcolor); tft_fill_area(167-spoffsetx,152-spoffsety,8,25,spcolor);
+	splash_delay(SPLASH_DELAY);
+	// E arc (225,128,0) (249,128,1) (225,152,3)
+	draw_arc(225-spoffsetx,128-spoffsety,0,spcolor); draw_arc(249-spoffsetx,128-spoffsety,1,spcolor); draw_arc(225-spoffsetx,153-spoffsety,3,spcolor);
+	splash_delay(SPLASH_DELAY);
+	// R arc (52,186,0) (76,186,1) box (52,210,8,25)
+	draw_arc(52-spoffsetx,186-spoffsety,0,spcolor); draw_arc(76-spoffsetx,186-spoffsety,1,spcolor); tft_fill_area(52-spoffsetx,210-spoffsety,8,25,spcolor);
+	splash_delay(SPLASH_DELAY);
+	// C arc (110,186,0) (110,210,3) box (134,186,24,8) (134,227,24,8)
+	draw_arc(110-spoffsetx,186-spoffsety,0,spcolor); draw_arc(110-spoffsetx,211-spoffsety,3,spcolor); tft_fill_area(134-spoffsetx,186-spoffsety,24,8,spcolor); tft_fill_area(134-spoffsetx,227-spoffsety,24,8,spcolor);
+	splash_delay(SPLASH_DELAY);
+	// O arc (167,186,0) (191,186,1) (191,210,2) (167,210,3)
+	draw_arc(167-spoffsetx,186-spoffsety,0,spcolor); draw_arc(191-spoffsetx,186-spoffsety,1,spcolor); draw_arc(191-spoffsetx,211-spoffsety,2,spcolor); draw_arc(167-spoffsetx,211-spoffsety,3,spcolor);
+	splash_delay(SPLASH_DELAY);
+	// N arc (225,186,0) (249,186,1) box (225,210,8,25) (266,210,8,25)
+	draw_arc(225-spoffsetx,186-spoffsety,0,spcolor); draw_arc(249-spoffsetx,186-spoffsety,1,spcolor); tft_fill_area(225-spoffsetx,210-spoffsety,8,25,spcolor); tft_fill_area(265-spoffsetx,210-spoffsety,8,25,spcolor);
+	splash_delay(1300);
+	
+	//	}
+	
 	/*
     struct Cipher_box box0 = { 0, 0 };
     struct Cipher_box box1 = { 319+(10*CIPHER_CHAR_WIDTH), 1 };
