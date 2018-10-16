@@ -502,7 +502,7 @@ void showmenu(void)
 	//Print menu text
 	video_set_color(MENU_BANNER_FG,MENU_BANNER_BG);
 	video_gotoxy(TEXT_LEFT,2);
-	stdio_write("Hackaday Belgrade Conference");
+	stdio_write("  Hackaday Supercon 2018");
 	video_gotoxy(TEXT_LEFT,5);
 	video_set_color(MENU_HEADER_FG,MENU_HEADER_BG);
 	stdio_write("Type a command and hit ENTER");
