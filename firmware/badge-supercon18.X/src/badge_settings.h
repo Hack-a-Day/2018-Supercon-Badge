@@ -4,7 +4,10 @@
 #define __BADGE_SETTINGS_H
 
 //Badge firmware version should be defined as a string here:
-#define FIRMWARE_VERSION "1.06"
+#define FIRMWARE_VERSION "1.07"
+
+//comment for new fast tokenizer or uncomment for old, slower but proven tokenizer
+//#define	TOKENIZER_OLD
 
 //define length of BASIC program RAM buffer
 //increasing the length will allow you to hold larger programs
