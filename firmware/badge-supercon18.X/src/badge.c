@@ -916,12 +916,14 @@ uint8_t cmd_exec (int8_t * cmd)
 				if (brk_key) 
 					{
 					brk_key = 0;
+					video_set_color(MENU_DEFAULT_FG, MENU_DEFAULT_BG);
 					stdio_write("\nBRK pressed\n");
 					break;
 					}
 				if (!setjmp(jbuf)) ubasic_run();
 				else
 					{
+					video_set_color(MENU_DEFAULT_FG, MENU_DEFAULT_BG);
 					stdio_write("\nBASIC error\n");
 					break;
 					}
