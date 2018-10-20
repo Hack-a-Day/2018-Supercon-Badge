@@ -52,24 +52,31 @@ uint8_t playriff(unsigned char);
 #define COMMAND_MAX 32
 #define TEXT_LEFT	4
 #define PROMPT_Y	15
-#define CRACK_Y		17
-#define VERSION_X	33
+#define CRACK_X		0
+#define CRACK_Y		18
+#define CRACK_CHAR_LINE_LIMIT	31
+#define VERSION_X	32
 #define VERSION_Y	18
 #define CRACK_TIMEOUT 4000
+//Menu characters
+#define MENU_ACCENT_CHAR		220
+#define MENU_FRAME_CHAR			219
 //Menu color values
-#define MENU_FRAME_FG	12
-#define MENU_FRAME_BG	0
-#define MENU_BANNER_FG	0
-#define MENU_BANNER_BG	15
+#define MENU_FRAME_FG	7
+#define MENU_FRAME_BG	8
+#define MENU_FRAME_ACCENT 12
+#define MENU_BANNER_FG	11
+#define MENU_BANNER_BG	8
 #define MENU_HEADER_FG	15
 #define MENU_HEADER_BG	8
-#define MENU_ENTRY_FG	15
-#define MENU_ENTRY_BG	9
+#define MENU_ENTRY_FG	10
+#define MENU_ENTRY_BG	8
 #define MENU_DEFAULT_FG 15
-#define MENU_DEFAULT_BG 0
-#define MENU_VERSION_FG	8
-#define MENU_SECRET_COLOR 10
-#define MENU_CRACK_COLOR 14
+#define MENU_DEFAULT_BG 8
+#define MENU_VERSION_FG	11
+#define MENU_SECRET_COLOR 12
+#define MENU_CRACK_FG 14
+#define MENU_CRACK_BG 0
 /********** End Defines **************************/
 
 /************* Function Prototypes ***************/
@@ -348,13 +355,13 @@ void badge_menu(void)
 					switch (get_command_index(hash(menu_buff)))
 						{
 						//case 0: break;
-						case 2: clear_flag = wisecrack("Make your own sandwich",TEXT_LEFT,CRACK_Y, 0); break;
-						case 3: clear_flag = wisecrack("Existence itself is not a hack", TEXT_LEFT,CRACK_Y, 0); break;
-						case 4: clear_flag = wisecrack("101010 *IS* the answer", TEXT_LEFT,CRACK_Y, 0); break;
-						case 5: clear_flag = wisecrack("Hackers don't need manuals", TEXT_LEFT,CRACK_Y, 0); break;
-						case 6: clear_flag = wisecrack("Han shot first", TEXT_LEFT,CRACK_Y, 0); break;
-						case 7: clear_flag = wisecrack("You're in a room filled with hackers", TEXT_LEFT,CRACK_Y, 0); break;
-						case 8: clear_flag = wisecrack("I am afraid I can't do that Dave", TEXT_LEFT,CRACK_Y, 0); break;
+						case 2: clear_flag = wisecrack("Make your own sandwich",CRACK_X,CRACK_Y, 0); break;
+						case 3: clear_flag = wisecrack("Existence itself is not a hack", CRACK_X,CRACK_Y, 0); break;
+						case 4: clear_flag = wisecrack("101010 *IS* the answer", CRACK_X,CRACK_Y, 0); break;
+						case 5: clear_flag = wisecrack("Hackers don't need manuals", CRACK_X,CRACK_Y, 0); break;
+						case 6: clear_flag = wisecrack("Han shot first", CRACK_X,CRACK_Y, 0); break;
+						case 7: clear_flag = wisecrack("You're in a room filled with hackers", CRACK_X,CRACK_Y, 0); break;
+						case 8: clear_flag = wisecrack("I am afraid I can't do that Dave", CRACK_X,CRACK_Y, 0); break;
 						case 9: show_wrencher(); break;
 						case 10: play_mario_tune(); break;
 						case 11: 
@@ -379,7 +386,7 @@ void badge_menu(void)
 					{
 					menu_pointer = 0;
 					menu_buff[menu_pointer] = 0;
-					clear_flag = wisecrack("Boo, too big.",TEXT_LEFT,CRACK_Y,1);
+					clear_flag = wisecrack("Boo, too big.",CRACK_X,CRACK_Y,1);
 					clear_prompt();
 					}
 				}
@@ -418,37 +425,37 @@ uint8_t get_command_index(uint32_t  hash_value)
 uint8_t random_crack(void)
 	{
 	uint8_t i = (uint8_t)rand()%CRACKCOUNT;
-	return wisecrack((uint8_t *)cracks[i],TEXT_LEFT, CRACK_Y,1);
+	return wisecrack((uint8_t *)cracks[i],CRACK_X, CRACK_Y,1);
 	}
 
 uint8_t wisecrack(int8_t * quip, uint16_t x, uint8_t y, uint8_t type)
 	{
 	uint8_t index, line1index, line2index;
-	uint8_t line1[33];
-	uint8_t line2[33];
+	uint8_t line1[CRACK_CHAR_LINE_LIMIT+1];
+	uint8_t line2[CRACK_CHAR_LINE_LIMIT+1];
 	index = 0;
 	line1index = 0;
 	line2index = 0;
 	while (quip[index] != 0)
 		{
-		if (index < 32)
+		if (index < CRACK_CHAR_LINE_LIMIT)
 			{
 			line1[line1index++] = quip[index];
 			}
-		else if (index < 64)
+		else if (index < (CRACK_CHAR_LINE_LIMIT*2))
 			{
 			line2[line2index++] = quip[index];
 			}
-		if (++index >= 64) break;
+		if (++index >= (CRACK_CHAR_LINE_LIMIT*2)) break;
 		}
 	line1[line1index] = 0;
 	line2[line2index] = 0;
 	
 	if (type == 0)
 		{
-		video_set_color(MENU_SECRET_COLOR, MENU_DEFAULT_BG);
+		video_set_color(MENU_SECRET_COLOR, MENU_CRACK_BG);
 		}
-	else video_set_color(MENU_CRACK_COLOR, MENU_DEFAULT_BG);
+	else video_set_color(MENU_CRACK_FG, MENU_CRACK_BG);
 	video_gotoxy(x,y);
 	stdio_write(line1);
 	video_gotoxy(x,y+1);
@@ -461,10 +468,12 @@ void clear_crack(void)
 	int16_t cursorx, cursory;
 	cursorx = video_getx();
 	cursory = video_gety();
-	video_gotoxy(1,CRACK_Y);
-	stdio_write((uint8_t *)blanks);
-	video_gotoxy(1,CRACK_Y+1);
-	stdio_write((uint8_t *)blanks);
+	video_set_color(MENU_CRACK_FG,MENU_CRACK_BG);
+	video_gotoxy(CRACK_X,CRACK_Y);
+	showchars(CRACK_CHAR_LINE_LIMIT,' ');
+	video_gotoxy(CRACK_X,CRACK_Y+1);
+	showchars(CRACK_CHAR_LINE_LIMIT,' ');
+	video_set_color(MENU_DEFAULT_FG,MENU_DEFAULT_BG);
 	video_gotoxy(cursorx,cursory);
 	}
 
@@ -478,41 +487,26 @@ void showchars(uint8_t how_many, uint8_t ascii_code)
 	}
 void showmenu(void)
 	{
-	//Set some background boxes
-	video_clrscr();
-	video_set_color(MENU_BANNER_FG,MENU_BANNER_BG);
-	video_gotoxy(1,1);
-	stdio_write((uint8_t *)blanks);
-	video_gotoxy(1,2);
-	stdio_write((uint8_t *)blanks);
-	video_gotoxy(1,3);
-	stdio_write((uint8_t *)blanks);
 	
-	video_set_color(MENU_HEADER_FG,MENU_HEADER_BG);
-	video_gotoxy(3,5);
-	stdio_write("                                  ");
-	video_set_color(MENU_ENTRY_FG,MENU_ENTRY_BG);
-	video_gotoxy(3,6);
-	stdio_write("                                  ");
-	video_gotoxy(3,7);
-	stdio_write("                                  ");
-	video_gotoxy(3,8);
-	stdio_write("                                  ");
-	video_gotoxy(3,9);
-	stdio_write("                                  ");
-	video_gotoxy(3,10);
-	stdio_write("                                  ");
-	video_gotoxy(3,11);
-	stdio_write("                                  ");
+	video_clrscr();
+	
+	
 	
 	//Draw frame
-	video_set_color(MENU_FRAME_FG,MENU_FRAME_BG);
 	fancyframe();
+	
+	//Set some background boxes
+	video_set_color(MENU_BANNER_FG,MENU_BANNER_BG);
+	video_gotoxy(1,2);
+	showchars(31,' ');
+	video_set_color(MENU_VERSION_FG,MENU_DEFAULT_BG);
+	video_gotoxy(32,18);
+	showchars(7,' ');
 	
 	//Print menu text
 	video_set_color(MENU_BANNER_FG,MENU_BANNER_BG);
-	video_gotoxy(TEXT_LEFT,2);
-	stdio_write("  Hackaday Supercon 2018");
+	video_gotoxy(2,2);
+	stdio_write("2018 Hackaday Superconference");
 	video_gotoxy(TEXT_LEFT,5);
 	video_set_color(MENU_HEADER_FG,MENU_HEADER_BG);
 	stdio_write("Type a command and hit ENTER");
@@ -538,38 +532,68 @@ void show_version(void)
 	{
 	video_set_color(MENU_VERSION_FG,MENU_DEFAULT_BG);
 	video_gotoxy(VERSION_X,VERSION_Y);
-	stdio_write("v");
+	stdio_write(" v");
 	stdio_write((int8_t *)get_firmware_string());
 	}
 
 void fancyframe(void)
 	{
 	uint16_t i;
+	
+	//Accent row on top
+	video_set_color(MENU_FRAME_ACCENT,0);
 	video_gotoxy(0,0);
-	stdio_c(201);
-	showchars(38,205);
-	stdio_c(187);
-	video_gotoxy(0,39);
-	stdio_c(200);
-	showchars(38,205);
-	stdio_c(188);
-	for (i=1; i<19; i++)
+	showchars(33,MENU_ACCENT_CHAR);
+	
+	video_set_color(MENU_FRAME_FG,MENU_FRAME_BG);
+	video_gotoxy(0,1);
+	showchars(33,MENU_FRAME_CHAR);
+	
+	//Frame beside badge title
+	video_gotoxy(0,2);
+	stdio_c(MENU_FRAME_CHAR);
+	video_gotoxy(32,2);
+	stdio_c(MENU_FRAME_CHAR);
+	video_set_color(MENU_FRAME_ACCENT,0);
+	showchars(7,MENU_ACCENT_CHAR);
+	
+	//Frame below badge title
+	video_set_color(MENU_FRAME_FG,MENU_FRAME_BG);
+	video_gotoxy(0,3);
+	showchars(40,MENU_FRAME_CHAR);
+	
+	//Frame on either side of screen
+	for (i=4; i<17; i++)
 		{
 		video_gotoxy(0,i);
-		stdio_c(186);
-		video_gotoxy(39,i);
-		stdio_c(186);
+		stdio_c(MENU_FRAME_CHAR);
+		showchars(38,' ');
+		stdio_c(MENU_FRAME_CHAR);
 		}
+	
+	//Frame bottom accent
+	video_set_color(MENU_FRAME_ACCENT,MENU_FRAME_BG);
+	video_gotoxy(1,16);
+	showchars(38,MENU_ACCENT_CHAR);
+	video_set_color(MENU_FRAME_FG,MENU_FRAME_BG);
+	video_gotoxy(0,17);
+	showchars(40,MENU_FRAME_CHAR);
+	
+	//Frame for version number
+	video_gotoxy(31,18);
+	showchars(9,MENU_FRAME_CHAR);
+	video_gotoxy(31,19);
+	showchars(9,MENU_FRAME_CHAR);
 	}
 
 void clear_prompt(void)
 	{
 	//Clear prompt area
-	video_gotoxy(TEXT_LEFT,PROMPT_Y);
-	int16_t i;
-	for (i=TEXT_LEFT; i<39; i++) stdio_write(" ");
+	
 	
 	video_set_color(MENU_DEFAULT_FG, MENU_DEFAULT_BG);
+	video_gotoxy(TEXT_LEFT,PROMPT_Y);
+	showchars(39-TEXT_LEFT,' ');
 	video_gotoxy(TEXT_LEFT,PROMPT_Y);
 	stdio_write("> ");
 	}
