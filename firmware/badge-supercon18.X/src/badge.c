@@ -157,7 +157,7 @@ const uint8_t rand_crack01[] = "Prove you're human: 0b101010";
 const uint8_t rand_crack02[] = "I don't think that mean what you think it means.";
 const uint8_t rand_crack03[] = "Want to play a game?";
 const uint8_t rand_crack04[] = "How do I get 30 extra live?";
-const uint8_t rand_crack05[] = "Maybe you should RTFM: https://hac.io/Mz3r";
+const uint8_t rand_crack05[] = "Maybe you should RTFM: https://hac.io/VKtq9";
 const uint8_t rand_crack06[] = "Erm... It's supposed to do that";
 const uint8_t rand_crack07[] = "Too many errors on one line (make fewer)";
 const uint8_t rand_crack08[] = "You are in a maze of twisty compiler features, all different";
@@ -212,7 +212,7 @@ void show_help(void)
 	video_set_color(1,11);
 	stdio_write("Badge Documentation:\n");
 	video_set_color(15,0);
-	stdio_write("  hac.io/Mz3r");
+	stdio_write("  hac.io/VKtq9");
 	}
 
 //B_BDG005
@@ -899,7 +899,7 @@ uint8_t cmd_exec (int8_t * cmd)
 			stdio_write("Basic BASIC help:\n");
 			stdio_write("Type more to list the program in buffer, ");
 			stdio_write("or run to run it.\n");
-			stdio_write(" For more documentation see hac.io/Mz3r\n");
+			stdio_write(" For more documentation see hac.io/VKtq9\n");
 			}
 		else if (strncmp("load",cmd,4)==0)
 			{
