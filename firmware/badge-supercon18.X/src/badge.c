@@ -37,6 +37,7 @@ uint8_t get_command_index(uint32_t );
 uint8_t wisecrack(int8_t *, uint16_t , unsigned char, uint8_t);
 void clear_crack(void);
 uint8_t random_crack(void);
+void showchars(uint8_t how_many, uint8_t ascii_code);
 void showmenu(void);
 void show_version(void);
 void fancyframe(void);
@@ -467,6 +468,14 @@ void clear_crack(void)
 	video_gotoxy(cursorx,cursory);
 	}
 
+void showchars(uint8_t how_many, uint8_t ascii_code)
+	{
+	uint8_t i;
+	for (i=0; i<how_many; i++)
+		{
+		stdio_c(ascii_code);
+		}
+	}
 void showmenu(void)
 	{
 	//Set some background boxes
@@ -538,11 +547,11 @@ void fancyframe(void)
 	uint16_t i;
 	video_gotoxy(0,0);
 	stdio_c(201);
-	for (i=0; i<38; i++) stdio_c(205);
+	showchars(38,205);
 	stdio_c(187);
 	video_gotoxy(0,39);
 	stdio_c(200);
-	for (i=0; i<38; i++) stdio_c(205);
+	showchars(38,205);
 	stdio_c(188);
 	for (i=1; i<19; i++)
 		{
