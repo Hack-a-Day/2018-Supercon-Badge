@@ -76,8 +76,9 @@ uint8_t playriff(unsigned char);
 
 int8_t bprog[BPROG_LEN+1];
 int8_t bprog_init[700] =
-"30 for i=1 to 100\n\
-40 a = rnd 55\n\
+"30 for i=1 to 1000\n\
+40 a = rnd 99\n\
+45 print a\n\
 50 next i\n\
 ";
 
@@ -502,7 +503,7 @@ void showmenu(void)
 	//Print menu text
 	video_set_color(MENU_BANNER_FG,MENU_BANNER_BG);
 	video_gotoxy(TEXT_LEFT,2);
-	stdio_write("Hackaday Belgrade Conference");
+	stdio_write("  Hackaday Supercon 2018");
 	video_gotoxy(TEXT_LEFT,5);
 	video_set_color(MENU_HEADER_FG,MENU_HEADER_BG);
 	stdio_write("Type a command and hit ENTER");

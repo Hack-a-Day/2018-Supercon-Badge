@@ -1,0 +1,4 @@
+make sure yu have re2c installed
+run the run.sh file
+copy the file tokenizer_fast.c into ../src/basic
+
