@@ -72,7 +72,7 @@ uint8_t playriff(unsigned char);
 #define MENU_ENTRY_FG	10
 #define MENU_ENTRY_BG	8
 #define MENU_DEFAULT_FG 15
-#define MENU_DEFAULT_BG 8
+#define MENU_DEFAULT_BG 0
 #define MENU_VERSION_FG	11
 #define MENU_SECRET_COLOR 12
 #define MENU_CRACK_FG 14
@@ -473,7 +473,7 @@ void clear_crack(void)
 	showchars(CRACK_CHAR_LINE_LIMIT,' ');
 	video_gotoxy(CRACK_X,CRACK_Y+1);
 	showchars(CRACK_CHAR_LINE_LIMIT,' ');
-	video_set_color(MENU_DEFAULT_FG,MENU_DEFAULT_BG);
+	video_set_color(MENU_DEFAULT_FG,MENU_ENTRY_BG);
 	video_gotoxy(cursorx,cursory);
 	}
 
@@ -499,7 +499,7 @@ void showmenu(void)
 	video_set_color(MENU_BANNER_FG,MENU_BANNER_BG);
 	video_gotoxy(1,2);
 	showchars(31,' ');
-	video_set_color(MENU_VERSION_FG,MENU_DEFAULT_BG);
+	video_set_color(MENU_VERSION_FG,MENU_ENTRY_BG);
 	video_gotoxy(32,18);
 	showchars(7,' ');
 	
@@ -530,7 +530,7 @@ void showmenu(void)
 
 void show_version(void)
 	{
-	video_set_color(MENU_VERSION_FG,MENU_DEFAULT_BG);
+	video_set_color(MENU_VERSION_FG,MENU_ENTRY_BG);
 	video_gotoxy(VERSION_X,VERSION_Y);
 	stdio_write(" v");
 	stdio_write((int8_t *)get_firmware_string());
@@ -591,7 +591,7 @@ void clear_prompt(void)
 	//Clear prompt area
 	
 	
-	video_set_color(MENU_DEFAULT_FG, MENU_DEFAULT_BG);
+	video_set_color(MENU_DEFAULT_FG, MENU_ENTRY_BG);
 	video_gotoxy(TEXT_LEFT,PROMPT_Y);
 	showchars(39-TEXT_LEFT,' ');
 	video_gotoxy(TEXT_LEFT,PROMPT_Y);
@@ -739,6 +739,7 @@ void loop_z80_cpm (void)
 //B_BAS005
 void init_basic (void)
 	{
+	video_set_color(MENU_DEFAULT_FG, MENU_DEFAULT_BG);
 	stdio_write("BASIC interpreter\n");
 	prompt = 1;
 	brk_key = 0;
@@ -962,6 +963,7 @@ uint8_t cmd_exec (int8_t * cmd)
 					}
 				} 	while(!ubasic_finished());
 			handle_display = 1;
+			video_set_color(MENU_DEFAULT_FG, MENU_DEFAULT_BG);
 			stdio_write("\n");
 			}
 		else 
