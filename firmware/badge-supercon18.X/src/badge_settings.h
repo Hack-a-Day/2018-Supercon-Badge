@@ -4,7 +4,7 @@
 #define __BADGE_SETTINGS_H
 
 //Badge firmware version should be defined as a string here:
-#define FIRMWARE_VERSION "1.07"
+#define FIRMWARE_VERSION "1.08"
 
 //comment for new fast tokenizer or uncomment for old, slower but proven tokenizer
 //#define	TOKENIZER_OLD
@@ -55,6 +55,8 @@
 //enabled - use RAM buffering, faster, less wear-out
 //disabled - more stable and straight-forward
 #define	FLASH_BUFFERING
+
+#define	INPUT_BUFFER_LEN	70
 
 
 #endif

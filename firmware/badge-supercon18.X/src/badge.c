@@ -724,9 +724,9 @@ void loop_basic (void)
 	get_stat = stdio_get(&char_out);
 	if (get_stat!=0)
 	    {
-	    if ((char_out!=BACKSPACE)|(cmd_line_pointer>0)) stdio_c(char_out);	
 	    if (char_out==NEWLINE) 
 			{
+			stdio_c(char_out);
 			cmd_line_buff[cmd_line_pointer] = 0;
 			cmd_exec (cmd_line_buff);
 			cmd_line_pointer=0;
@@ -735,11 +735,18 @@ void loop_basic (void)
 			}
 	    else
 			{
-			if ((char_out>=' ')&(char_out<0x7F)) cmd_line_buff[cmd_line_pointer++] = char_out;
+			if ((char_out>=' ')&(char_out<0x7F)&(cmd_line_pointer<INPUT_BUFFER_LEN)) 
+				{
+				stdio_c(char_out);
+				cmd_line_buff[cmd_line_pointer++] = char_out;
+				}
 			else if (char_out==BACKSPACE)
 				{
 				if (cmd_line_pointer>0) 
+					{
 					cmd_line_buff[--cmd_line_pointer]=0;
+					stdio_c(char_out);
+					}
 				}
 
 			}
@@ -786,7 +793,7 @@ uint8_t add_prog_line (int8_t * line, int8_t * prog, int16_t linenum)
     {
     uint8_t * prog_ptr=prog, * prog_ptr_prev, * prog_ptr_dest;
     int16_t linenum_now,linenum_prev=0,line_exp_len,cnt, prog_len;
-    int8_t line_rest[50],line_exp[50],ret;
+    int8_t line_rest[INPUT_BUFFER_LEN],line_exp[INPUT_BUFFER_LEN],ret;
     sprintf(line_exp,"%d %s\n",linenum,line);
     line_exp_len = strlen(line_exp);
 	prog_len = strlen(prog);
@@ -835,8 +842,10 @@ uint8_t add_prog_line (int8_t * line, int8_t * prog, int16_t linenum)
 //B_BAS007
 uint8_t cmd_exec (int8_t * cmd)
     {
-    int8_t cmd_clean[25];
+    int8_t cmd_clean[INPUT_BUFFER_LEN];
     int32_t linenum,prognum;
+	int8_t len = strlen(cmd);
+	if (len>(INPUT_BUFFER_LEN-1)) cmd[INPUT_BUFFER_LEN-1] = 0;
     if (isdigit(cmd[0]))
 		{
 		sscanf(cmd,"%d %[^\n]s",&linenum,cmd_clean);
@@ -1234,4 +1243,3 @@ void __ISR(_EXTERNAL_2_VECTOR, IPL4AUTO) Int2Handler(void)
 	{
 	IEC0bits.INT2IE = 0;
 	}
-
