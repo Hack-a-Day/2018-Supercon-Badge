@@ -500,7 +500,10 @@ static void gosub_statement(void)
 		}
 	else
 		{
-		DEBUG_PRINTF("gosub_statement: gosub stack exhausted\n");
+		sprintf(err_msg,"gosub stack exhausted at line %d\n", last_linenum);
+		stdio_write(err_msg);
+		tokenizer_error_print();
+		longjmp(jbuf,1);             // jumps back to where setjmp was called - making setjmp now return 1		
 		}
 	}
 /*---------------------------------------------------------------------------*/

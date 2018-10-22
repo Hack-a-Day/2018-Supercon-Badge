@@ -38,6 +38,8 @@
       <logicalFolder name="basic" displayName="basic" projectFiles="true">
         <itemPath>src/basic/tokenizer.c</itemPath>
         <itemPath>src/basic/ubasic.c</itemPath>
+        <itemPath>src/basic/tokenizer_fast.c</itemPath>
+        <itemPath>src/basic/tokenizer_slow.c</itemPath>
       </logicalFolder>
       <logicalFolder name="Z80" displayName="Z80" projectFiles="true">
         <itemPath>src/Z80/sim2.c</itemPath>
@@ -277,7 +279,8 @@
         <property key="TIMER5" value="true"/>
         <property key="ToolFirmwareFilePath"
                   value="Press to browse for a specific firmware version"/>
-        <property key="ToolFirmwareOption.UseLatestFirmware" value="true"/>
+        <property key="ToolFirmwareOption.UpdateOptions"
+                  value="ToolFirmwareOption.UseLatest"/>
         <property key="UART1" value="true"/>
         <property key="UART2" value="true"/>
         <property key="UART3" value="true"/>

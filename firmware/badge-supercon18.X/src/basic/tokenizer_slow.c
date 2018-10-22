@@ -233,13 +233,9 @@ get_next_token(void)
 
 	strncpy(token_string,ptr,SUBTOKEN_LEN);
 	ptr2 = strchr(token_string, ' ');
-	if (ptr2!=0) 
-		*ptr2 = 0;
-	else
-		{
-		ptr2 = strchr(token_string, '\n');
-		if (ptr2!=0) *ptr2 = 0;
-		}
+	if (ptr2!=0) *ptr2 = 0;
+	ptr2 = strchr(token_string, '\n');
+	if (ptr2!=0) *ptr2 = 0;
 	DEBUG_PRINTF("get_next_token(): '%s'\n", ptr);
 
 	if(*ptr == 0)

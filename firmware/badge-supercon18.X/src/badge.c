@@ -84,10 +84,17 @@ uint8_t playriff(unsigned char);
 
 int8_t bprog[BPROG_LEN+1];
 int8_t bprog_init[700] =
-"30 for i=1 to 1000\n\
-40 a = rnd 99\n\
-45 print a\n\
-50 next i\n\
+"10 gosub 40\n\
+20 pnt 4\n\
+30 end\n\
+40 pnt 1\n\
+45 gosub 2900\n\
+50 return\n\
+2900 pnt 2\n\
+2905 gosub 3500\n\
+2910 return\n\
+3500 pnt 3\n\
+3510 return\n\
 ";
 
 
@@ -883,7 +890,7 @@ uint8_t cmd_exec (int8_t * cmd)
 	if (len>(INPUT_BUFFER_LEN-1)) cmd[INPUT_BUFFER_LEN-1] = 0;
     if (isdigit(cmd[0]))
 		{
-		sscanf(cmd,"%d %s",&linenum,cmd_clean);
+		sscanf(cmd,"%d %[^\n]s",&linenum,cmd_clean);
 		add_prog_line (cmd_clean,bprog, linenum);
 		}
     else
