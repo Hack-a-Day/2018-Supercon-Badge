@@ -86,6 +86,7 @@ int8_t bprog[BPROG_LEN+1];
 int8_t bprog_init[700] =
 "10 gosub 40\n\
 20 pnt 4\n\
+25 return\n\
 30 end\n\
 40 pnt 1\n\
 45 gosub 2900\n\

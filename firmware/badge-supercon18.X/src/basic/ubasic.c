@@ -500,7 +500,7 @@ static void gosub_statement(void)
 		}
 	else
 		{
-		sprintf(err_msg,"gosub stack exhausted at line %d\n", last_linenum);
+		sprintf(err_msg,"gosub stack overflow at line %d\n", last_linenum);
 		stdio_write(err_msg);
 		tokenizer_error_print();
 		longjmp(jbuf,1);             // jumps back to where setjmp was called - making setjmp now return 1		
@@ -517,7 +517,10 @@ static void return_statement(void)
 		}
 	else
 		{
-		DEBUG_PRINTF("return_statement: non-matching return\n");
+		sprintf(err_msg,"gosub stack underflow at line %d\n", last_linenum);
+		stdio_write(err_msg);
+		tokenizer_error_print();
+		longjmp(jbuf,1);             // jumps back to where setjmp was called - making setjmp now return 1	
 		}
 	}
 /*---------------------------------------------------------------------------*/
