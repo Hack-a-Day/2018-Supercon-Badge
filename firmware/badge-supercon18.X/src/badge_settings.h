@@ -4,7 +4,7 @@
 #define __BADGE_SETTINGS_H
 
 //Badge firmware version should be defined as a string here:
-#define FIRMWARE_VERSION "1.12"
+#define FIRMWARE_VERSION "1.14"
 
 //comment for new fast tokenizer or uncomment for old, slower but proven tokenizer
 //#define	TOKENIZER_OLD

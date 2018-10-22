@@ -63,7 +63,7 @@ static char const *program_ptr;
 #define MAX_STRINGLEN 40
 static char string[MAX_STRINGLEN];
 
-#define MAX_GOSUB_STACK_DEPTH 10
+#define MAX_GOSUB_STACK_DEPTH 30
 static int gosub_stack[MAX_GOSUB_STACK_DEPTH];
 static int gosub_stack_ptr;
 
