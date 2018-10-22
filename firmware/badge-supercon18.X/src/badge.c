@@ -877,12 +877,13 @@ uint8_t add_prog_line (int8_t * line, int8_t * prog, int16_t linenum)
 uint8_t cmd_exec (int8_t * cmd)
     {
     int8_t cmd_clean[INPUT_BUFFER_LEN];
+	cmd_clean[0]=0;
     int32_t linenum,prognum;
 	int8_t len = strlen(cmd);
 	if (len>(INPUT_BUFFER_LEN-1)) cmd[INPUT_BUFFER_LEN-1] = 0;
     if (isdigit(cmd[0]))
 		{
-		sscanf(cmd,"%d %[^\n]s",&linenum,cmd_clean);
+		sscanf(cmd,"%d %s",&linenum,cmd_clean);
 		add_prog_line (cmd_clean,bprog, linenum);
 		}
     else
