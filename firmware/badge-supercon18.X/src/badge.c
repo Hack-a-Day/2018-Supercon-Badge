@@ -854,7 +854,7 @@ uint8_t add_prog_line (int8_t * line, int8_t * prog, int16_t linenum)
     {
     uint8_t * prog_ptr=prog, * prog_ptr_prev, * prog_ptr_dest;
     int16_t linenum_now,linenum_prev=0,line_exp_len,cnt, prog_len;
-    int8_t line_rest[INPUT_BUFFER_LEN],line_exp[INPUT_BUFFER_LEN],ret;
+    int8_t line_rest[INPUT_BUFFER_LEN+1],line_exp[INPUT_BUFFER_LEN+1],ret;
     sprintf(line_exp,"%d %s\n",linenum,line);
     line_exp_len = strlen(line_exp);
 	prog_len = strlen(prog);
@@ -903,11 +903,11 @@ uint8_t add_prog_line (int8_t * line, int8_t * prog, int16_t linenum)
 //B_BAS007
 uint8_t cmd_exec (int8_t * cmd)
     {
-    int8_t cmd_clean[INPUT_BUFFER_LEN];
+    int8_t cmd_clean[INPUT_BUFFER_LEN+1];
 	cmd_clean[0]=0;
     int32_t linenum,prognum;
 	int8_t len = strlen(cmd);
-	if (len>(INPUT_BUFFER_LEN-1)) cmd[INPUT_BUFFER_LEN-1] = 0;
+	if (len>(INPUT_BUFFER_LEN)) cmd[INPUT_BUFFER_LEN] = 0;
     if (isdigit(cmd[0]))
 		{
 		sscanf(cmd,"%d %[^\n]s",&linenum,cmd_clean);

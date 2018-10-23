@@ -580,7 +580,10 @@ static void for_statement(void)
 		}
 	else
 		{
-		DEBUG_PRINTF("for_statement: for stack depth exceeded\n");
+		sprintf(err_msg,"FOR stack overflow at line %d\n", last_linenum);
+		stdio_write(err_msg);
+		tokenizer_error_print();
+		longjmp(jbuf,1);             // jumps back to where setjmp was called - making setjmp now return 1	
 		}
 	}
 /*---------------------------------------------------------------------------*/
