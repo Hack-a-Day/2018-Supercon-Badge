@@ -27,6 +27,7 @@
       <itemPath>src/tune_player.h</itemPath>
       <itemPath>src/user_program.h</itemPath>
       <itemPath>src/vt100.h</itemPath>
+      <itemPath>src/puzzle.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -67,6 +68,7 @@
       <itemPath>src/tune_player.c</itemPath>
       <itemPath>src/user_program.c</itemPath>
       <itemPath>src/vt100.c</itemPath>
+      <itemPath>src/puzzle.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -88,7 +90,7 @@
         <targetPluginBoard></targetPluginBoard>
         <platformTool>pk4hybrid</platformTool>
         <languageToolchain>XC32</languageToolchain>
-        <languageToolchainVersion>2.05</languageToolchainVersion>
+        <languageToolchainVersion>2.10</languageToolchainVersion>
         <platform>2</platform>
       </toolsSet>
       <packs>

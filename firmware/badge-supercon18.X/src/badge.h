@@ -8,6 +8,7 @@
 #include "post.h"
 #include "badge_settings.h"
 #include "snake.h"
+#include "puzzle.h"
 #include "user_program.h"
 #include "vt100.h"
 #include "Z80/hwz.h"

@@ -17,9 +17,11 @@ uint16_t basic_loads (int8_t * data, uint16_t maxlen);
 uint16_t basic_saves (int8_t * data, uint16_t maxlen);
 void init_z80_cpm (void);
 void init_basic (void);
+void init_puzzle(void);
 void init_userprog(void);
 void loop_z80_cpm (void);
 void loop_basic (void);
+void loop_puzzle(void);
 void loop_userprog(void);
 void boot_animation(void);
 void init_8080_basic (void);
@@ -355,9 +357,14 @@ void badge_menu(void)
 					}
 				else if (strcmp(menu_buff,"6")==0)
 					{
+					init_puzzle();
+					while (1) loop_puzzle();
+					}
+				else if (strcmp(menu_buff,"7")==0)
+					{
 					init_userprog();
 					while (1) loop_userprog();
-					}	
+					}
 				else
 					{
 					switch (get_command_index(hash(menu_buff)))
@@ -530,7 +537,9 @@ void showmenu(void)
 	video_gotoxy(TEXT_LEFT,10);
 	stdio_write("5 - Zork @ CP/M @ Z80");
 	video_gotoxy(TEXT_LEFT,11);
-	stdio_write("6 - User Program");
+	stdio_write("6 - Puzzle");
+	video_gotoxy(TEXT_LEFT,12);
+	stdio_write("7 - User Program");
 	
 	show_version();
 	clear_prompt();
@@ -794,6 +803,16 @@ void loop_basic (void)
 			}
 	    }	
 	}
+
+void init_puzzle (void)
+{
+	puzzle_init();
+}
+
+void loop_puzzle (void)
+{
+	puzzle_loop();
+}
 
 //B_BDG007
 void init_userprog (void)
