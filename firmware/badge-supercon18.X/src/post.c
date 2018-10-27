@@ -43,7 +43,8 @@ void post (void)
 	set_led(2,0);	
 
 	flash_id = fl_rdid();
-	if (flash_id==0x1f4501)
+//	if (flash_id==0x1f4501)					//belgrade badge has this flash, should merge it later
+	if (flash_id==0xbf2641)
 		video_set_color(EGA_WHITE,EGA_GREEN);
 	else
 		video_set_color(EGA_YELLOW,EGA_RED);
@@ -51,7 +52,7 @@ void post (void)
 	sprintf(temp_string,"FLASH ID is %x\n",flash_id);
 	stdio_write(temp_string);
 	video_set_color(EGA_WHITE,EGA_BLACK);
-	stdio_write("Press LCTRL+ENTER to continue\n");
+	stdio_write("Press LSHIFT+ENTER to continue\n");
 	wait_ms(200);
 	video_set_color(11,1);
 	video_gotoxy(1,1);
@@ -181,7 +182,7 @@ void post (void)
 			sound_play_notes(0,0,72,200);
 			}
 		video_set_color(EGA_WHITE,EGA_BLACK);
-		stdio_write("Press LCTRL+ENTER to continue\n");
+		stdio_write("Press LSHIFT+ENTER to continue\n");
 		if (stdio_get(&retval)!=0)
 			{
 			if (retval == K_ECR) break;
@@ -208,7 +209,7 @@ void post (void)
 		video_set_color(EGA_WHITE,EGA_BLACK);
 		sprintf(temp_string,"pin # %d\n",color);
 		stdio_write(temp_string);
-		stdio_write("Press LCTRL+ENTER to continue\n");
+		stdio_write("Press LSHIFT+ENTER to continue\n");
 		if (stdio_get(&retval)!=0)
 			{
 			if (retval == K_ECR) break;

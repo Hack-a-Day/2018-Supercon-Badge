@@ -93,8 +93,10 @@ int16_t main(void)
  * CP/M machine is setup to use six different drives:
  * A: - 22kB in size, RAM disk. Fast, no wearout, ideal for temporary storage. Trashed on reboot.
  * B: - 128kB ROM disk, contains a lot of goodies. You could pack a lot of software into 128kB then.
- * C: - 128kB ROM dosk, contains Zork and Sargon. You know, games.
- * D: - 512kB FLASH disk, free for your use
+ * C: - 128kB ROM disk, contains Zork and Sargon. You know, games.
+ * D: - 510kB FLASH disk, free for your use
+ * E: - 510kB FLASH disk, free for your use
+ * F: - 510kB FLASH disk, free for your use
  * hwz.c contains all stuff to access disks and devices of CP/M machine, like disk byte read and write
  * functions, called directly by BIOS via addresses 0x07 and 0x08, with 0x05 and 0x06 setting track and
  * sector of drive selected via 0x04.
@@ -104,5 +106,14 @@ int16_t main(void)
  * If defined, you can - for example - list files directly from CP/M via virtual printer, or make virtual
  * punch card reader/puncher to EEPROM, thumb drive, PC, FTP server via ESP32 or anything you can connect 
  * to bitbanged interface on badge expansion port.
+ * 
+ * If CP/M OS screams at you "NO DIRECTORY SPACE" when copying files to FLASH disk, run formatting first.
+ * Reset your badge while holding BRK key. Badge will reset into test mode. This fills  screen, allows to 
+ * test keyboard, spekaer, IO pins, etc. Screen will instruct you to press LSHIFT+ENTER to get to next test. 
+ * After all are passed, you can format your CP/M flash portion by hitting F key. If you do it, you r CP/M
+ * disk are formatted, it takes a few seconds.
+ * 
+ * If you are new to CP/M, take a look at useful reference there 
+ * http://www.gaby.de/cpm/manuals/archive/cpm22htm/ch1.htm
  * 
  */
