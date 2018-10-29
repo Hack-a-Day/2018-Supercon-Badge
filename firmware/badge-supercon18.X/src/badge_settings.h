@@ -47,7 +47,7 @@
 //first ROM disk, full of utils, mapped as disk B. you can disable this one
 #define	USE_ROMDISK
 //second ROM disk, with games, mapped as disk C. you can disable this one
-//#define	USE_ROMDISK2
+#define	USE_ROMDISK2
 //RAM disk, you can save 22kb of RAM by disabling it
 #define	USE_RAMDISK
 
@@ -59,6 +59,6 @@
 #define	INPUT_BUFFER_LEN	70
 
 //Nyancat demo, can free 84 bytes of RAM and 8532 bytes of ROM by disabling.
-#define NYANCAT_DEMO
+//#define NYANCAT_DEMO
 
 #endif
