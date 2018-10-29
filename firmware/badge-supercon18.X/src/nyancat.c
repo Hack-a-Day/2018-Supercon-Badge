@@ -1,7 +1,6 @@
-#include <xc.h>
-#include "badge_user.h"
 #include "nyancat.h"
 
+#ifdef NYANCAT_DEMO
 
 uint32_t play_next_note(uint8_t measure_index, uint8_t note_index, uint8_t *next_note)
 {
@@ -40,12 +39,12 @@ void nyancat(void)
     // NN = Not used, RR = 8-bit red, GG = 8-bit green, BB = 8-bit blue
     uint32_t line[320];
 
-    uint16_t i = 0;
-    uint32_t pixel_idx = 0;
-    uint16_t encoded_run = 0;
-    uint32_t pal_entry = 0;
-    uint16_t pal_run = 0;
-    uint8_t frame_idx = 0;
+    uint16_t i = 0; // General loop counter
+    uint8_t  frame_idx = 0; // Which frame are we currently displaying?
+    uint16_t frame_data = 0;// Which byte in frame data are we on?
+    uint8_t  low_nibble = 0;// When 1, the next data comes from low nibble of frame_data
+    uint32_t draw_color = 0;// Currently used RGB color
+    uint8_t  run_length = 0;// Number of pixels to draw of current color
 
     // Image scaling control. 1=full scale, 2=half scale, 4=quarter, etc.
     const uint8_t multiplier = 4; // Only quarter-resolution version is on badge by default.
@@ -75,7 +74,8 @@ void nyancat(void)
         {
             time_for_next_frame += milliseconds_per_frame;
 
-            pixel_idx=0;
+            frame_data=0;
+            low_nibble=0;
             if(frame_idx > 11)
             {
                 frame_idx = 0;
@@ -87,18 +87,29 @@ void nyancat(void)
 
                 while (x < 320)
                 {
-                    encoded_run = cat4_frames[frame_idx][pixel_idx];
-                    pal_entry = cat4_palette[(encoded_run>>12)&0xF];
-                    pal_run = encoded_run&0xFFF;
-                    for (i = 0; i < pal_run; i++)
+                    if (low_nibble)
+                    {
+                        draw_color = cat4_palette[cat4_frames[frame_idx][frame_data]&0xF];
+                        run_length = cat4_frames[frame_idx][frame_data+1];
+                        frame_data += 2;
+                        low_nibble = 0;
+                    }
+                    else
+                    {
+                        draw_color = cat4_palette[cat4_frames[frame_idx][frame_data] >> 4];
+                        run_length = ((cat4_frames[frame_idx][frame_data] & 0xF)<<4) |
+                                     (cat4_frames[frame_idx][frame_data+1]>>4);
+                        frame_data++;
+                        low_nibble = 1;
+                    }
+                    for (i = 0; i < run_length; i++)
                     {
                         for (multiply_loop=0; multiply_loop<multiplier; multiply_loop++)
                         {
-                            line[x+i*multiplier+multiply_loop] = pal_entry;
+                            line[x+i*multiplier+multiply_loop] = draw_color;
                         }
                     }
-                    x += pal_run*multiplier;
-                    pixel_idx++;
+                    x += run_length*multiplier;
                 }
 
                 tft_set_write_area(0,y,319,multiplier);
@@ -107,8 +118,8 @@ void nyancat(void)
                 {
                     for (i=0;i<320;i++)
                     {
-                        pal_entry = line[i];
-                        TFT_24_7789_Write_Data3((pal_entry>>16)&0xFF,(pal_entry>>8)&0xFF,(pal_entry>>0)&0xFF);
+                        draw_color = line[i];
+                        TFT_24_7789_Write_Data3((draw_color>>16)&0xFF,(draw_color>>8)&0xFF,(draw_color>>0)&0xFF);
                     }
                 }
             }
@@ -167,3 +178,5 @@ void nyancat(void)
     }
     //Badge will need to be reset to continue    
 }
+
+#endif // NYANCAT_DEMO

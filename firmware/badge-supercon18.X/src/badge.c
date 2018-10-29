@@ -365,6 +365,12 @@ void badge_menu(void)
 					init_userprog();
 					while (1) loop_userprog();
 					}
+#ifdef NYANCAT_DEMO
+				else if (strcmp(menu_buff,"nya")==0)
+					{
+					nyancat();
+					}
+#endif
 				else
 					{
 					switch (get_command_index(hash(menu_buff)))

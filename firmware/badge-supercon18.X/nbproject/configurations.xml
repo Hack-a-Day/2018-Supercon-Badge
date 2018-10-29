@@ -70,7 +70,7 @@
       <itemPath>src/user_program.c</itemPath>
       <itemPath>src/vt100.c</itemPath>
       <itemPath>src/puzzle.c</itemPath>
-      <itemPath>src/nyancat.cpp</itemPath>
+      <itemPath>src/nyancat.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -90,7 +90,7 @@
         <targetDevice>PIC32MX370F512H</targetDevice>
         <targetHeader></targetHeader>
         <targetPluginBoard></targetPluginBoard>
-        <platformTool>pk4hybrid</platformTool>
+        <platformTool>PICkit3PlatformTool</platformTool>
         <languageToolchain>XC32</languageToolchain>
         <languageToolchainVersion>2.10</languageToolchainVersion>
         <platform>2</platform>
