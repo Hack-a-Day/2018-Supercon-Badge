@@ -279,9 +279,8 @@ const uint32_t cat4_palette[14] = {
 //          0xC4E = 0x4E pixels of color in palette index 0xC (0x00003366)
 //          0x001 = 1 pixel of color in palette index 0 (0x00FFFFFF)
 //
-// Thanks to the blocky nature of the animation, a super simple run length
-// encoding is smaller than equivalent GIF and a lot simpler to decode on our
-// humble microprocessor.
+// Thanks to the blocky nature of nyancat animation, a super simple run length
+// encoding compresses nearly as much as GIF and far simpler to decode.
 
 const uint8_t cat4_frame0[507] = {
   0xC4,0xE0,0x01,0xC0,0x1C,0x50,0xC4,0xB0,0x02,0xC0,0x10,0x01,0xC0,0x1C,0x50,
