@@ -58,5 +58,7 @@
 
 #define	INPUT_BUFFER_LEN	70
 
+//Nyancat demo, can free ~8kb of program memory by disabling.
+#define NYANCAT_DEMO
 
 #endif
