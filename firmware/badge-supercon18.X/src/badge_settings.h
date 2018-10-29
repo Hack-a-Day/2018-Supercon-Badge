@@ -59,6 +59,6 @@
 #define	INPUT_BUFFER_LEN	70
 
 //Nyancat demo, can free 84 bytes of RAM and 8468 bytes of ROM by disabling.
-//#define NYANCAT_DEMO
+#define NYANCAT_DEMO
 
 #endif
