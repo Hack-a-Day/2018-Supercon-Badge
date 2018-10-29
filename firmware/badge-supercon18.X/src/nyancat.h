@@ -1,28 +1,54 @@
+///////////////////////////////////////////////////////////////////////////////
+// Badge Nyancat demo: an adaptation of the (in)famous internet meme
+//
+// This is an animation that plays at full screen while playing a simplified
+// rendition of the video soundtrack.
+//
+// Pressing '0' on the keyboard mutes the music while animation continues.
+// Pressing '9' on the keyboard restarts music if muted, otherwise no effect.
+//
+// The animation data encoded below is only at 80x60 resolution to conserve
+// space. For playback, each pixel is scaled up to fit the full 320x240
+// screen resolution.
+//
+// The music was translated from sheet music by a contributor on musescore.com
+//   https://musescore.com/user/179139/scores/170886
+
 #ifndef		__NYANCAT_H
 #define		__NYANCAT_H
 
-#include <xc.h>
 #include "badge.h"
 
 #ifdef NYANCAT_DEMO
 
-// Entry point for Nyancat demo
-
+///////////////////////////////////////////////////////////////////////////////
+// Entry point to start playing
 void nyancat(void);
 
+///////////////////////////////////////////////////////////////////////////////
 // Music information to play nyancat song
 
 #define NYANCAT_SEQUENCES 16 // Sequence of measures in music loop
 #define NYANCAT_MEASURES 9   // Number of unique measures in the song
 
+// Time duration (in milliseconds) referenced from nyancat_measure below
 const uint8_t nyancat_durations[2] = {
-    105,
-    210,
+    105, // sixteenth
+    210, // eighth
 };
 
+// Array size for each of the arrays holding music measures
 const uint8_t nyancat_measure_limits[NYANCAT_MEASURES] = {
   33,45,42,36,39,42,39,39,39
 };
+
+// Measures in the song. Each beat in the measure is separated by a blank line
+// Each line has three entires. The first two are notes to be played
+// simultaneously denoted in Scientific Pitch Notation
+// (https://en.wikipedia.org/wiki/Scientific_pitch_notation)
+// The third number is an index into nyancat_durations[] array which is the
+// time (in milliseconds) to hold those two notes. This allows music tempo to
+// be adjusted with few code changes.
 
 const uint8_t nyancat_measure0[33] = {
     41,79,1,
@@ -196,10 +222,7 @@ const uint8_t nyancat_measure8[39] = {
     60,74,1,
 };
 
-const uint8_t nyancat_sequence[NYANCAT_SEQUENCES] = {
-    0,1,2,3,0,1,2,3,4,5,6,7,4,5,6,8
-};
-
+// Assemble the measures above into a single array of all measures in the song.
 const uint8_t* nyancat_measures[NYANCAT_MEASURES] = {
     nyancat_measure0,
     nyancat_measure1,
@@ -212,8 +235,15 @@ const uint8_t* nyancat_measures[NYANCAT_MEASURES] = {
     nyancat_measure8,
 };
 
-// Run-length encoded version of poptartcat.gif in 80x60 resolution
+// The song plays its measures in this sequence, looping infinitely
+const uint8_t nyancat_sequence[NYANCAT_SEQUENCES] = {
+    0,1,2,3,0,1,2,3,4,5,6,7,4,5,6,8
+};
 
+///////////////////////////////////////////////////////////////////////////////
+// Run-length encoded version of poptartcat.gif animation in 80x60 resolution
+
+// Color palette used in the animation, each entry in 0x00RRGGBB format.
 const uint32_t cat4_palette[14] = {
   0x00FFFFFF,
   0x00FFFF00,
@@ -230,6 +260,28 @@ const uint32_t cat4_palette[14] = {
   0x00003366,
   0x00000000,
 };
+
+///////////////////////////////////////////////////////////////////////////////
+// Run-length encoded data for each frame in the animation. Each encoding entry
+// consists of a 4-bit index into the palette followed by 8-bit length of
+// pixels of that color.
+//
+// Example: 0xC4E means there is a run of 0x4E pixels all of the color at
+//          palette index 0xC.
+//
+// Since each encoding entry takes 12 bits (4 bit palette index, 8 bit length)
+// They do not pack nicely in a byte array. Extracting this data requires a lot
+// of bitwise manipulators and isn't terribly easy to read.
+//
+// Example: The first three bytes of frame0 are 0xC4, 0xE0, 0x01. This
+//          represents two runs.
+//
+//          0xC4E = 0x4E pixels of color in palette index 0xC (0x00003366)
+//          0x001 = 1 pixel of color in palette index 0 (0x00FFFFFF)
+//
+// Thanks to the blocky nature of the animation, a super simple run length
+// encoding is smaller than equivalent GIF and a lot simpler to decode on our
+// humble microprocessor.
 
 const uint8_t cat4_frame0[507] = {
   0xC4,0xE0,0x01,0xC0,0x1C,0x50,0xC4,0xB0,0x02,0xC0,0x10,0x01,0xC0,0x1C,0x50,
@@ -691,6 +743,8 @@ const uint8_t cat4_frame11[513] = {
   0xC5,0x0C,0x50,
 };
 
+// Assemble the individual frames together into an array representing the entire
+// animation.
 const uint8_t* cat4_frames[12] = {
   cat4_frame0,
   cat4_frame1,
