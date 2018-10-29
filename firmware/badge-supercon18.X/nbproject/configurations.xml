@@ -28,6 +28,7 @@
       <itemPath>src/user_program.h</itemPath>
       <itemPath>src/vt100.h</itemPath>
       <itemPath>src/puzzle.h</itemPath>
+      <itemPath>src/nyancat.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -69,6 +70,7 @@
       <itemPath>src/user_program.c</itemPath>
       <itemPath>src/vt100.c</itemPath>
       <itemPath>src/puzzle.c</itemPath>
+      <itemPath>src/nyancat.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -88,13 +90,13 @@
         <targetDevice>PIC32MX370F512H</targetDevice>
         <targetHeader></targetHeader>
         <targetPluginBoard></targetPluginBoard>
-        <platformTool>pk4hybrid</platformTool>
+        <platformTool>PICkit3PlatformTool</platformTool>
         <languageToolchain>XC32</languageToolchain>
-        <languageToolchainVersion>2.05</languageToolchainVersion>
+        <languageToolchainVersion>2.10</languageToolchainVersion>
         <platform>2</platform>
       </toolsSet>
       <packs>
-        <pack name="PIC32MX_DFP" vendor="Microchip" version="1.0.23"/>
+        <pack name="PIC32MX_DFP" vendor="Microchip" version="0.1.20"/>
       </packs>
       <compileType>
         <linkerTool>
