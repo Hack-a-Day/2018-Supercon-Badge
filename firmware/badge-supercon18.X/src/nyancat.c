@@ -15,15 +15,15 @@ uint32_t play_next_note(uint8_t measure_index, uint8_t note_index, uint8_t *next
         return duration;
     }
 
-    nyancat_index = note_index * 4;
+    nyancat_index = note_index * 3;
     if (nyancat_index < nyancat_measure_limits[measure_index])
     {
-        for (voice_index = 0; voice_index < 3; voice_index++)
+        for (voice_index = 0; voice_index < 2; voice_index++)
         {
             sound_set_note(nyancat_measures[measure_index][nyancat_index+voice_index],voice_index);
         }
 
-        duration = nyancat_durations[nyancat_measures[measure_index][nyancat_index+3]];
+        duration = nyancat_durations[nyancat_measures[measure_index][nyancat_index+2]];
         *next_note = note_index+1;
     }
 
@@ -66,6 +66,7 @@ void nyancat(void)
     uint8_t mute = 0;
 
     enable_display_scanning(0); //Shut off auto-scanning of character buffer
+    sound_set_note(0,2); // We're only using 2 out of 3 voices
     
     while(1) //Loop forever
     {
