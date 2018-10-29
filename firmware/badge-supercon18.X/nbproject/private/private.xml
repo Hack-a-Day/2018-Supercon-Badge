@@ -5,6 +5,7 @@
         <group>
             <file>file:/home/jarin/storage/main/backup_mg/sc/2018-Supercon-Badge/firmware/badge-supercon18.X/src/basic/ubasic.c</file>
             <file>file:/home/jarin/storage/main/backup_mg/sc/2018-Supercon-Badge/firmware/badge-supercon18.X/src/badge.c</file>
+            <file>file:/home/jarin/storage/main/backup_mg/sc/2018-Supercon-Badge/firmware/badge-supercon18.X/src/post.c</file>
             <file>file:/home/jarin/storage/main/backup_mg/sc/2018-Supercon-Badge/firmware/badge-supercon18.X/src/main.c</file>
             <file>file:/home/jarin/storage/main/backup_mg/sc/2018-Supercon-Badge/firmware/badge-supercon18.X/src/badge_settings.h</file>
         </group>
