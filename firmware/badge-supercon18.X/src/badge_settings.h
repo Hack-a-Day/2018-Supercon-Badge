@@ -4,7 +4,7 @@
 #define __BADGE_SETTINGS_H
 
 //Badge firmware version should be defined as a string here:
-#define FIRMWARE_VERSION "1.16"
+#define FIRMWARE_VERSION "1.17"
 
 //comment for new fast tokenizer or uncomment for old, slower but proven tokenizer
 //#define	TOKENIZER_OLD
@@ -43,7 +43,7 @@
 //B_BDG010
 //this one enables 64k of RAM image for CP/M 
 //if off, disables all CP/M stuff and leaves "empty" Z80 machine
-#define	USE_RAM_IMAGE	
+#define	USE_RAM_IMAGE_NEW
 //first ROM disk, full of utils, mapped as disk B. you can disable this one
 #define	USE_ROMDISK
 //second ROM disk, with games, mapped as disk C. you can disable this one

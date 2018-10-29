@@ -86,19 +86,29 @@ uint8_t playriff(unsigned char);
 
 int8_t bprog[BPROG_LEN+1];
 int8_t bprog_init[700] =
-"10 gosub 40\n\
-20 pnt 4\n\
-25 return\n\
-30 end\n\
-40 pnt 1\n\
-45 gosub 2900\n\
-50 return\n\
-2900 pnt 2\n\
-2905 gosub 3500\n\
-2910 return\n\
-3500 pnt 3\n\
-3510 return\n\
-";
+"10 c = 1 + rnd 4\n\
+20 color c,c+8\n\
+30 for i=1 to 800\n\
+40 chr 200 + (rnd 6)\n\
+50 next i\n\
+60 wait 100\n\
+70 tune 60,64,67,800\n\
+80 tune 57,62,66,800\n\
+90 tune 59,64,47,800\n\
+100 tune 59,62,67,800\n\
+110 for i=60 to 72\n\
+120 led (rnd 2),1\n\
+130 led (rnd 2),0\n\
+140 tune 0,0,i,20\n\
+150 next i\n\
+160 tune 67,71,74,1600\n\
+170 for i=0 to 2\n\
+180 led i,0\n\
+190 next i\n\
+200 color 15,0\n\
+210 println \"Type more to see code\"\n\
+220 println \" \"\n\
+230 println \"Find documentation: hac.io/VKtq9 \" \n";
 
 
 //a lot of magic numbers here, should be done properly
@@ -115,7 +125,15 @@ volatile int8_t brk_key,stdio_src;
 extern volatile uint16_t bufsize;
 volatile uint32_t ticks;			// millisecond timer incremented in ISR
 
+#ifdef	USE_RAM_IMAGE_OLD
 extern const uint8_t ram_image[65536];
+#endif
+
+#ifdef	USE_RAM_IMAGE_NEW
+extern const uint8_t ram_image_a[3];
+extern const uint8_t ram_image_b[0xFFFF-0xD800];
+#endif
+
 extern const uint8_t b2_rom[2048];
 extern const uint8_t ram_init [30];
 extern uint8_t ram_disk[RAMDISK_SIZE];
@@ -737,8 +755,13 @@ void loop_8080_basic (void)
 void init_z80_cpm (void)
 	{
 	video_set_color(15,0);
-#ifdef	USE_RAM_IMAGE	
+#ifdef	USE_RAM_IMAGE_OLD	
 	for (i=0;i<65536;i++) ram[i] = ram_image[i];
+#endif	
+#ifdef	USE_RAM_IMAGE_NEW	
+	for (i=0;i<65536;i++) ram[i] = 0;
+	for (i=0;i<3;i++) ram[i] = ram_image_a[i];
+	reload_cpm_warm();
 #endif	
 #ifdef	USE_RAMDISK
 	for (i=0;i<RAMDISK_SIZE;i++) ram_disk[i] = 0xE5;

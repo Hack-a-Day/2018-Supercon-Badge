@@ -21,8 +21,13 @@ uint8_t unwritten;
 uint8_t fl_rdsr(void);
 uint32_t fl_rdid(void);
 
-#ifdef	USE_RAM_IMAGE
+#ifdef	USE_RAM_IMAGE_OLD
 extern const uint8_t ram_image[65536];
+#endif
+
+#ifdef	USE_RAM_IMAGE_NEW
+extern const uint8_t ram_image_a[3];
+extern const uint8_t ram_image_b[0xFFFF-0xD800];
 #endif
 
 #ifdef	USE_RAMDISK
@@ -32,10 +37,13 @@ uint8_t ram_disk[RAMDISK_SIZE];
 void reload_cpm_warm (void)
 {
 uint16_t i;
-#ifdef	USE_RAM_IMAGE	
+#ifdef	USE_RAM_IMAGE_OLD
 	for (i=0xD400;i<(0xD400+0x1EFF);i++) ram[i] = ram_image[i];
 #endif
-}
+#ifdef	USE_RAM_IMAGE_NEW
+	for (i=0;i<0x1AFF;i++) ram[i+0xD800] = ram_image_b[i];
+#endif
+	}
 
 //-------------------device at 0x68-----------------
 uint8_t rxm_sta (void)
