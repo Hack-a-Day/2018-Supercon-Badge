@@ -69,8 +69,8 @@
       <itemPath>src/tune_player.c</itemPath>
       <itemPath>src/user_program.c</itemPath>
       <itemPath>src/vt100.c</itemPath>
-      <itemPath>src/puzzle.c</itemPath>
       <itemPath>src/nyancat.c</itemPath>
+      <itemPath>src/puzzle.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
