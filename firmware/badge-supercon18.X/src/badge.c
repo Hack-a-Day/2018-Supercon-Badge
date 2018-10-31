@@ -696,8 +696,9 @@ uint8_t playriff(uint8_t raisetop)
 	}
 
 
-//housekeeping stuff. call this function often
-void loop_badge(void)
+// housekeeping stuff. call this function often
+// now it's called every 12ms from timer5
+void loop_badge(uint8_t force_pwroff)
 	{
 	static uint8_t brk_is_pressed;
 	if (K_PWR==0)
@@ -708,6 +709,13 @@ void loop_badge(void)
 		wait_ms(30);
 		while (K_PWR==0);
 		wait_ms(300);
+		}
+	if (force_pwroff)
+		{
+		hw_sleep();
+		wait_ms(30);
+		while (K_PWR==0);
+		wait_ms(300);		
 		}
 	if (KEY_BRK==0)
 		{
@@ -1318,14 +1326,32 @@ void display_refresh_force (void)
 void __ISR(_TIMER_5_VECTOR, IPL3AUTO) Timer5Handler(void)
 {
     uint8_t key_temp;
+	static uint32_t auto_pwrdn_counter=0;
     IFS0bits.T5IF = 0;
 	disp_tasks();
-	loop_badge();
+
     if (handle_display)
 		tft_disp_buffer_refresh_part((uint8_t *)(disp_buffer),(uint8_t *)color_buffer);
     key_temp = keyb_tasks();
     if (key_temp>0)
+		{
 		key_buffer[key_buffer_ptr++] = key_temp;
+		auto_pwrdn_counter = 0;
+		}
+	if (key_functional_pressed())
+		{
+		auto_pwrdn_counter = 0;
+		}
+#ifdef	AUTO_POWER_OFF
+	auto_pwrdn_counter++;
+#endif
+	if (auto_pwrdn_counter>=(AUTO_POWER_OFF_MIN*60*1000/12))
+		{
+		auto_pwrdn_counter = 0;
+		loop_badge(1);
+		}
+	else
+		loop_badge(0);
 }
 
 void __ISR(_TIMER_1_VECTOR, IPL4AUTO) Timer1Handler(void)

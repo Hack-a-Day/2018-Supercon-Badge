@@ -25,7 +25,7 @@ uint8_t rx_read (void);
 void tx_write (uint8_t data);
 
 const char* get_firmware_string(void);
-void loop_badge(void);
+void loop_badge(uint8_t force_pwroff);
 
 uint8_t stdio_local_buffer_state (void);
 int8_t stdio_local_buffer_get (void);

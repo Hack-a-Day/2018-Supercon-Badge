@@ -100,6 +100,7 @@ void exp_ddr(uint8_t pos, uint8_t val);
 uint8_t exp_get (uint8_t pos);
 uint8_t get_led_word(void);
 void set_led_word (uint8_t val);
+uint8_t key_functional_pressed (void);
 
 
 

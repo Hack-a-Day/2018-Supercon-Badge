@@ -465,6 +465,14 @@ void hw_init (void)
   	}
 
 
+uint8_t key_functional_pressed (void)
+	{
+	if (K_SHIFTL==0) return 1;
+	if (K_SHIFTR==0) return 1;
+	if (K_BRK==0) return 1;
+	return 0;
+	}
+
 uint8_t keyb_tasks (void)
 	{
 	static int8_t shift=0;
