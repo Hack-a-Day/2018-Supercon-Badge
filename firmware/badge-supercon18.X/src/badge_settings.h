@@ -4,7 +4,7 @@
 #define __BADGE_SETTINGS_H
 
 //Badge firmware version should be defined as a string here:
-#define FIRMWARE_VERSION "1.19"
+#define FIRMWARE_VERSION "1.20"
 
 //comment to disable auto power off
 #define	AUTO_POWER_OFF

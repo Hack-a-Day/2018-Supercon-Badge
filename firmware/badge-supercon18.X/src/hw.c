@@ -470,6 +470,7 @@ uint8_t key_functional_pressed (void)
 	if (K_SHIFTL==0) return 1;
 	if (K_SHIFTR==0) return 1;
 	if (K_BRK==0) return 1;
+	if (K_PWR==0) return 1;
 	return 0;
 	}
 
