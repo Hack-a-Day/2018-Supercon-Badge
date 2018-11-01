@@ -157,4 +157,12 @@ uint8_t rx_read (void);
 void tx_write (uint8_t data);
 
 
+void iic_init (void);
+void iic_start (void);
+void iic_restart (void);
+unsigned char iic_read (uint8_t ack);
+void iic_stop (void);
+void iic_write (uint8_t data);
+uint8_t iic_ackstat (void);
+
 #endif

@@ -624,3 +624,53 @@ void tx_write (uint8_t data)
 	while (U3STAbits.UTXBF==1); 
 	}
 
+void iic_init (void)
+	{
+	TRISGbits.TRISG2 = 1;
+	TRISGbits.TRISG3 = 1;
+	I2C1CONbits.ON = 1;
+	I2C1BRG = 0xC2;
+	}
+
+void iic_start (void)
+	{
+	I2C1CONbits.SEN = 1;
+	while (I2C1CONbits.SEN);
+	}
+
+void iic_restart (void)
+	{
+	I2C1CONbits.RSEN = 1;
+	while (I2C1CONbits.RSEN);
+	}
+
+unsigned char iic_read (uint8_t ack)
+	{
+	uint8_t rcvd;
+	I2C1CONbits.RCEN = 1;
+	while (I2C1CONbits.RCEN==1);
+	rcvd = I2C1RCV;
+	if (ack==0) I2C1CONbits.ACKDT = 0;
+	else I2C1CONbits.ACKDT = 1;
+	I2C1CONbits.ACKEN = 1;
+	while (I2C1CONbits.ACKEN==1);
+	return rcvd;
+	}
+
+void iic_stop (void)
+	{
+	I2C1CONbits.PEN = 1;
+	while (I2C1CONbits.PEN);
+	}
+
+void iic_write (uint8_t data)
+	{
+	I2C1TRN = data;
+	while (I2C1STATbits.TRSTAT==1);
+	}
+
+uint8_t iic_ackstat (void)
+	{
+	if (I2C1STATbits.ACKSTAT==0) return 0;
+	else return 1;
+	}
