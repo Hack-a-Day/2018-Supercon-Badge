@@ -17,7 +17,7 @@ Details available on the [project page hosted by Hackaday.io](https://hackaday.i
   to help get started
 * [3-voice audio](https://hackaday.io/project/161859-2018-hackaday-superconference-badge/log/154557-music-syntax-and-guide)
 to make your badge sing like it's 1985
-* [Serial communications](https://hackaday.io/project/161859-2018-hackaday-superconference-badge/log/154557-music-syntax-and-guide) badge to badge, badge to computer, badge to...?
+* [Serial communications](https://hackaday.io/project/161859-2018-hackaday-superconference-badge/log/154556-serial-communications-with-badge) badge to badge, badge to computer, badge to...?
 * [Z80 emulator running CP/M](https://hackaday.io/project/161859-2018-hackaday-superconference-badge/log/154553-cpm-on-badge-quick-guide)
 with classic games like Zork and Sargon
 
