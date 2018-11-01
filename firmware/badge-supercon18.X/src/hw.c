@@ -624,6 +624,9 @@ void tx_write (uint8_t data)
 	while (U3STAbits.UTXBF==1); 
 	}
 
+
+// very primitive IIC routines
+// no error checking
 void iic_init (void)
 	{
 	TRISGbits.TRISG2 = 1;
@@ -669,6 +672,7 @@ void iic_write (uint8_t data)
 	while (I2C1STATbits.TRSTAT==1);
 	}
 
+// return the state of ACK bit from last write
 uint8_t iic_ackstat (void)
 	{
 	if (I2C1STATbits.ACKSTAT==0) return 0;
