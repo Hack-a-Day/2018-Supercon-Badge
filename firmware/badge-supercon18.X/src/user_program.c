@@ -2,6 +2,9 @@
  * This is the framework for those
  * who wish to write their own C
  * code for the basic badge
+ * 
+ * Take a look at user_program_temp.c (not included in project, but
+ * available in src directory) to see how to use IIC routines
  ************************************/
 
 

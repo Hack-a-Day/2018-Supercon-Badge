@@ -6,7 +6,6 @@
 
 extern int8_t bprog[BPROG_LEN+1];
 extern jmp_buf jbuf;
-
 extern uint8_t disk_temp[128],flash_buff[4096], conin_buffer[30], conin_buffer_pointer;
 
 int16_t main(void)

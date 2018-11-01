@@ -15,6 +15,8 @@
 #include "hw.h"
 #include "disp.h"
 #include <setjmp.h>
+#include <stdio.h>
+
 
 
 void terminal_init(void);
