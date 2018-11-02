@@ -65,6 +65,7 @@ const int8_t keys_shift_r[50] =
 	K_DN,K_RT,K_LT,':',K_UP,K_DEL,'+',K_ECR,BACKSPACE,'_',
 	};
 
+
 int8_t key_char;
 
 
@@ -497,8 +498,9 @@ uint8_t keyb_tasks (void)
 		{
 		if ((key<255)&(key_last!=key))
 			{
-			if (K_SHIFTL==0) key_char = keys_shift_l[key];
-			else if (K_SHIFTR==0) key_char = keys_shift_r[key];
+			if ((K_SHIFTL==0)&(K_SHIFTR==1)) key_char = keys_shift_l[key];
+			else if ((K_SHIFTL==1)&(K_SHIFTR==0)) key_char = keys_shift_r[key];
+			else if ((K_SHIFTL==0)&(K_SHIFTR==0)) key_char = keys_shift_r[key]-'A' + 1;
 			else key_char = keys_normal[key];
 			retval = key_char;
 			}
