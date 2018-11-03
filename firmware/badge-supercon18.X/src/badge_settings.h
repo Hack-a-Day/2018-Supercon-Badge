@@ -4,7 +4,7 @@
 #define __BADGE_SETTINGS_H
 
 //Badge firmware version should be defined as a string here:
-#define FIRMWARE_VERSION "1.21"
+#define FIRMWARE_VERSION "1.22"
 
 //comment to disable auto power off
 #define	AUTO_POWER_OFF
@@ -12,6 +12,8 @@
 //comment to disable auto power off
 #define	AUTO_POWER_OFF_MIN	30
 
+//uncomment to have stdio to TTY also doubled to local display
+//#ifdef	STDIO_TTY_DOUBLE
 
 //comment for new fast tokenizer or uncomment for old, slower but proven tokenizer
 //#define	TOKENIZER_OLD

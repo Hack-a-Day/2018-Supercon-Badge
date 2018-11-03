@@ -1159,7 +1159,16 @@ uint8_t stdio_write (int8_t * data)
 	else if (stdio_src==STDIO_TTY1)
 		{
 		while (*data!=0x00)
-		tx_write(*data++);
+			{
+#ifdef	STDIO_TTY_DOUBLE
+			buf_enqueue (*data);
+#endif
+			tx_write(*data++);
+#ifdef	STDIO_TTY_DOUBLE
+			while (bufsize)
+				receive_char(buf_dequeue());	
+#endif			
+			}
 		}
 	}
 
@@ -1176,7 +1185,16 @@ uint8_t stdio_c (uint8_t data)
 			receive_char(buf_dequeue());
 		}
 	else if (stdio_src==STDIO_TTY1)
+		{
 		tx_write(data);
+#ifdef	STDIO_TTY_DOUBLE
+		tmp[0] = data;
+		tmp[1] = 0;
+		buf_enqueue (data);
+		while (bufsize)
+			receive_char(buf_dequeue());
+#endif		
+		}
 	}
 
 //check, whether is there something to read from standard input

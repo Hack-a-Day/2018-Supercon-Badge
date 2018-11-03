@@ -5,6 +5,8 @@
  * 
  * Take a look at user_program_temp.c (not included in project, but
  * available in src directory) to see how to use IIC routines
+ * 
+ * see user_program_term.c to see simple one way serial terminal
  ************************************/
 
 
