@@ -10,7 +10,7 @@
 #include <stdint.h>
 #include "Z80/sim.h"
 #include "Z80/simglb.h"
-
+#include "user_program_term.h"
 
 
 uint16_t basic_loads (int8_t * data, uint16_t maxlen);
@@ -380,6 +380,11 @@ void badge_menu(void)
 					}
 				else if (strcmp(menu_buff,"7")==0)
 					{
+					user_term_init();
+					for (;;) user_term_loop();
+					}
+				else if (strcmp(menu_buff,"8")==0)
+					{
 					init_userprog();
 					while (1) loop_userprog();
 					}
@@ -563,7 +568,9 @@ void showmenu(void)
 	video_gotoxy(TEXT_LEFT,11);
 	stdio_write("6 - Puzzle");
 	video_gotoxy(TEXT_LEFT,12);
-	stdio_write("7 - User Program");
+	stdio_write("7 - Serial Terminal");
+	video_gotoxy(TEXT_LEFT,13);
+	stdio_write("8 - User Program");
 	
 	show_version();
 	clear_prompt();
