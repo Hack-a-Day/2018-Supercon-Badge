@@ -29,6 +29,7 @@
       <itemPath>src/vt100.h</itemPath>
       <itemPath>src/puzzle.h</itemPath>
       <itemPath>src/nyancat.h</itemPath>
+      <itemPath>src/user_program_term.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -71,6 +72,7 @@
       <itemPath>src/nyancat.c</itemPath>
       <itemPath>src/user_program.c</itemPath>
       <itemPath>src/puzzle.c</itemPath>
+      <itemPath>src/user_program_term.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

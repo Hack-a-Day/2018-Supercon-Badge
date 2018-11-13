@@ -1,3 +1,19 @@
-/firmware/badge1.X/build/default/
-/firmware/badge-supercon18.X/build/default/
-/firmware/badge-supercon18.X/dist/default/
+# MPLAB X:
+build
+debug
+dist
+firmware/*.X/*
+!firmware/*.X/Makefile
+!firmware/*.X/nbproject/
+firmware/*.X/nbproject/*
+!firmware/*.X/nbproject/configurations.xml
+!firmware/*.X/nbproject/project.xml
+!firmware/*.X/src/
+
+# Python:
+*.pyo
+*.pyc
+
+# Documentation:
+latex
+

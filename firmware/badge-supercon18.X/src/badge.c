@@ -10,7 +10,7 @@
 #include <stdint.h>
 #include "Z80/sim.h"
 #include "Z80/simglb.h"
-
+#include "user_program_term.h"
 
 
 uint16_t basic_loads (int8_t * data, uint16_t maxlen);
@@ -233,10 +233,17 @@ void show_help(void)
 	video_set_color(3,1);
 	stdio_write("Badge keyboard shortcuts:\n");
 	video_set_color(15,0);
-	stdio_write("  Reset badge : shift-RESET\n");
-	stdio_write("  Type underscore: Rshift-dash\n");
-	stdio_write("  Fast reset: Lshift-Rshift-RESET\n");
-	stdio_write("  Serial console: Lshift-Rshift-BRK\n");
+	stdio_write("  Reset badge : Lshift+RESET\n");
+	stdio_write("  Fast reset: Lshift+Rshift+RESET\n");
+	stdio_write("  Serial console: Lshift+Rshift+BRK\n");
+    stdio_write("  Use Rshift for additional characters:\n");
+    stdio_write("    1!` 6'^ 9([ 0)] =+~\n");
+    stdio_write("    -\"_ ;:| /?\\ ,<{ .>}\n");
+    stdio_write("  Use Lshift+Rshift as Ctrl:\n");
+    stdio_write("    @=0 A-Z=1-26 (=27 /=28\n");
+    stdio_write("    )=29 '=30 ==31\n");
+    stdio_write("  Caps Lock on/off: Lsh+Rsh+UP\n");
+    stdio_write("  ENTER=c.return, Shift-ENTER=l.feed\n");
 	video_set_color(1,11);
 	stdio_write("Badge Documentation:\n");
 	video_set_color(15,0);
@@ -323,7 +330,7 @@ void badge_menu(void)
 					video_gotoxy(TEXT_LEFT+2,PROMPT_Y);
 					}
 				}
-			else if (char_out==NEWLINE)
+			else if ((char_out==NEWLINE) || (char_out==K_ECR))
 				{
 				//Erase where the funny messages are written
 				clear_crack();
@@ -366,8 +373,6 @@ void badge_menu(void)
 					{
 					stdio_local_buffer_puts("c:\nzork1\n");
 					video_clrscr();
-					video_set_color(0,14);
-					stdio_write("\n\n\n\n\n\nPROTIP:\n\tUse Shift-Enter when playing ZORK!\n\n");
 					video_set_color(15,0);
 					wait_ms(2000);
 					init_z80_cpm();
@@ -379,6 +384,11 @@ void badge_menu(void)
 					while (1) loop_puzzle();
 					}
 				else if (strcmp(menu_buff,"7")==0)
+					{
+					user_term_init();
+					for (;;) user_term_loop();
+					}
+				else if (strcmp(menu_buff,"8")==0)
 					{
 					init_userprog();
 					while (1) loop_userprog();
@@ -563,7 +573,9 @@ void showmenu(void)
 	video_gotoxy(TEXT_LEFT,11);
 	stdio_write("6 - Puzzle");
 	video_gotoxy(TEXT_LEFT,12);
-	stdio_write("7 - User Program");
+	stdio_write("7 - Serial Terminal");
+	video_gotoxy(TEXT_LEFT,13);
+	stdio_write("8 - User Program");
 	
 	show_version();
 	clear_prompt();
@@ -812,6 +824,9 @@ void loop_basic (void)
 	get_stat = stdio_get(&char_out);
 	if (get_stat!=0)
 	    {
+        if (char_out==K_ECR)
+            char_out=NEWLINE;
+        
 	    if (char_out==NEWLINE) 
 			{
 			stdio_c(char_out);
